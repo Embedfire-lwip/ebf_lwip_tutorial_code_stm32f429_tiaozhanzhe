@@ -21,6 +21,7 @@
 #include "netconf.h"
 #include "LAN8742A.h"
 
+
 __IO uint32_t LocalTime = 0; /* this variable is used to create a time reference incremented by 10ms */
 static void TIM3_Config(uint16_t period,uint16_t prescaler);
 /**
@@ -40,7 +41,7 @@ int main(void)
 	printf("LAN8720A Ethernet Demo\n");
   
 	printf("ping实验例程\n");
-	
+  
 	printf("使用同一个局域网中的电脑ping开发板的地址，可进行测试\n");
 
 	//IP地址和端口可在netconf.h文件修改
@@ -111,3 +112,6 @@ void TIM3_IRQHandler(void)
 	TIM_ClearITPendingBit(TIM3,TIM_IT_Update);  //清除中断标志位
 }
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
+
+
+
