@@ -50,6 +50,10 @@ extern "C" {
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f4xx_hal.h"
 
+#include "./led/bsp_led.h" 
+#include ".\key\bsp_key.h" 
+#include "./usart/bsp_debug_usart.h"
+
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 

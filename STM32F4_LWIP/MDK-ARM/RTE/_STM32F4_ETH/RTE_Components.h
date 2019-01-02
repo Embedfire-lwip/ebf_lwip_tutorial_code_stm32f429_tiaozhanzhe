@@ -3,7 +3,7 @@
  * Auto generated Run-Time-Environment Component Configuration File
  *      *** Do not modify ! ***
  *
- * Project: 'STM32F4_ETH' 
+ * Project: 'STM32F4_LWIP' 
  * Target:  'STM32F4_ETH' 
  */
 
