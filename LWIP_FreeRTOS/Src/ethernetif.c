@@ -96,13 +96,22 @@ __ALIGN_BEGIN uint8_t Rx_Buff[ETH_RXBUFNB][ETH_RX_BUF_SIZE] __ALIGN_END; /* Ethe
 __ALIGN_BEGIN uint8_t Tx_Buff[ETH_TXBUFNB][ETH_TX_BUF_SIZE] __ALIGN_END; /* Ethernet Transmit Buffer */
 
 /* USER CODE BEGIN 2 */
-
+#define TIME_WAITING_FOR_INPUT                 ( portMAX_DELAY )
+/* Stack size of the interface thread */
+#define INTERFACE_THREAD_STACK_SIZE            ( 350 )
 /* USER CODE END 2 */
 
 /* Global Ethernet handle */
 ETH_HandleTypeDef heth;
 
 /* USER CODE BEGIN 3 */
+
+xSemaphoreHandle s_xSemaphore = NULL;
+static struct netif *s_pxNetIf = NULL;
+
+
+static void arp_timer(void *arg);
+
 
 /* USER CODE END 3 */
 
@@ -200,8 +209,20 @@ void HAL_ETH_MspDeInit(ETH_HandleTypeDef* ethHandle)
 }
 
 /* USER CODE BEGIN 4 */
+/**
+  * @brief  Ethernet Rx Transfer completed callback
+  * @param  heth: ETH handle
+  * @retval None
+  */
+void HAL_ETH_RxCpltCallback(ETH_HandleTypeDef *heth)
+{
+  LED2_TOGGLE;
+  portBASE_TYPE xHigherPriorityTaskWoken = pdFALSE;
+  xSemaphoreGiveFromISR( s_xSemaphore, &xHigherPriorityTaskWoken );
+}
 
 /* USER CODE END 4 */
+
 
 /*******************************************************************************
                        LL Driver Interface ( LwIP stack --> ETH) 
@@ -274,6 +295,21 @@ static void low_level_init(struct netif *netif)
   #else 
     netif->flags |= NETIF_FLAG_BROADCAST;
   #endif /* LWIP_ARP */
+  
+  s_pxNetIf =netif;
+    
+  s_xSemaphore = xSemaphoreCreateBinary();
+  /* create the task that handles the ETH_MAC */
+  BaseType_t xReturn = pdPASS;
+  xReturn = xTaskCreate((TaskFunction_t )ethernetif_input, 
+              (const char*)"ethernetif_input",
+              (uint16_t       )512,   /* 任务栈大小 */
+              (void*          )NULL,	/* 任务入口函数参数 */
+              (UBaseType_t    )2,	    /* 任务的优先级 */
+              (TaskHandle_t*  )NULL);
+              
+  if(pdPASS == xReturn)
+    printf("创建ethernetif_input任务成功!\r\n");
   
   /* Enable MAC and DMA transmission and reception */
   HAL_ETH_Start(&heth);
@@ -483,26 +519,30 @@ static struct pbuf * low_level_input(struct netif *netif)
  *
  * @param netif the lwip network interface structure for this ethernetif
  */
-void ethernetif_input(struct netif *netif)
+void ethernetif_input( void *argument )
 {
-  err_t err;
   struct pbuf *p;
-
-  /* move received packet into a new pbuf */
-  p = low_level_input(netif);
-    
-  /* no packet could be read, silently ignore this */
-  if (p == NULL) return;
-    
-  /* entry point to the LwIP stack */
-  err = netif->input(p, netif);
-    
-  if (err != ERR_OK)
+  
+  for( ;; )
   {
-    LWIP_DEBUGF(NETIF_DEBUG, ("ethernetif_input: IP input error\n"));
-    pbuf_free(p);
-    p = NULL;    
-  }
+//    if (xSemaphoreTake( s_xSemaphore, 1000)==pdTRUE)
+//    {
+        p = low_level_input( s_pxNetIf );
+        
+        if (p != NULL)
+        {
+          if (s_pxNetIf->input( p, s_pxNetIf) != ERR_OK )
+          {
+            pbuf_free(p);
+            p=NULL;
+            LWIP_DEBUGF(NETIF_DEBUG, ("ethernetif_input: IP input error\n"));
+          }
+        }
+        
+        vTaskDelay(1);/* 延时20个tick */
+    }
+    
+//  }
 }
 
 #if !LWIP_ARP
@@ -573,8 +613,15 @@ err_t ethernetif_init(struct netif *netif)
 
   /* initialize the hardware */
   low_level_init(netif);
-
+  etharp_init();
+  sys_timeout(ARP_TMR_INTERVAL, arp_timer, NULL);
   return ERR_OK;
+}
+
+static void arp_timer(void *arg)
+{
+  etharp_tmr();
+  sys_timeout(ARP_TMR_INTERVAL, arp_timer, NULL);
 }
 
 /* USER CODE BEGIN 6 */
@@ -585,10 +632,10 @@ err_t ethernetif_init(struct netif *netif)
 * @param  None
 * @retval Time
 */
-u32_t sys_jiffies(void)
-{
-  return HAL_GetTick();
-}
+//u32_t sys_jiffies(void)
+//{
+//  return HAL_GetTick();
+//}
 
 /**
 * @brief  Returns the current time in milliseconds
@@ -596,10 +643,10 @@ u32_t sys_jiffies(void)
 * @param  None
 * @retval Time
 */
-u32_t sys_now(void)
-{
-  return HAL_GetTick();
-}
+//u32_t sys_now(void)
+//{
+//  return HAL_GetTick();
+//}
 
 /* USER CODE END 6 */
 

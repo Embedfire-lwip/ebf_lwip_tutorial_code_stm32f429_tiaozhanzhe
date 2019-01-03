@@ -49,6 +49,7 @@
   
 /* Includes ------------------------------------------------------------------*/
 #include "lwip.h"
+#include "tcpip.h"
 #include "lwip/init.h"
 #include "lwip/netif.h"
 #if defined ( __CC_ARM )  /* MDK ARM Compiler */
@@ -84,31 +85,24 @@ uint8_t GATEWAY_ADDRESS[4];
   */
 void MX_LWIP_Init(void)
 {
+//  lwip_init();
+  tcpip_init(NULL, NULL);
+  
   /* IP addresses initialization */
   /* USER CODE BEGIN 0 */
-  IP_ADDRESS[0] = IP_ADDR0;
-  IP_ADDRESS[1] = IP_ADDR1;
-  IP_ADDRESS[2] = IP_ADDR2;
-  IP_ADDRESS[3] = IP_ADDR3;
-  NETMASK_ADDRESS[0] = NETMASK_ADDR0;
-  NETMASK_ADDRESS[1] = NETMASK_ADDR1;
-  NETMASK_ADDRESS[2] = NETMASK_ADDR2;
-  NETMASK_ADDRESS[3] = NETMASK_ADDR3;
-  GATEWAY_ADDRESS[0] = GW_ADDR0;
-  GATEWAY_ADDRESS[1] = GW_ADDR1;
-  GATEWAY_ADDRESS[2] = GW_ADDR2;
-  GATEWAY_ADDRESS[3] = GW_ADDR3;
+#ifdef USE_DHCP
+  ip_addr_set_zero_ip4(&ipaddr);
+  ip_addr_set_zero_ip4(&netmask);
+  ip_addr_set_zero_ip4(&gw);
+#else
+  IP4_ADDR(&ipaddr,IP_ADDR0,IP_ADDR1,IP_ADDR2,IP_ADDR3);
+  IP4_ADDR(&netmask,NETMASK_ADDR0,NETMASK_ADDR1,NETMASK_ADDR2,NETMASK_ADDR3);
+  IP4_ADDR(&gw,GW_ADDR0,GW_ADDR1,GW_ADDR2,GW_ADDR3);
+#endif /* USE_DHCP */
   /* USER CODE END 0 */
   /* Initilialize the LwIP stack without RTOS */
-  lwip_init();
-
-  /* IP addresses initialization without DHCP (IPv4) */
-  IP4_ADDR(&ipaddr, IP_ADDRESS[0], IP_ADDRESS[1], IP_ADDRESS[2], IP_ADDRESS[3]);
-  IP4_ADDR(&netmask, NETMASK_ADDRESS[0], NETMASK_ADDRESS[1] , NETMASK_ADDRESS[2], NETMASK_ADDRESS[3]);
-  IP4_ADDR(&gw, GATEWAY_ADDRESS[0], GATEWAY_ADDRESS[1], GATEWAY_ADDRESS[2], GATEWAY_ADDRESS[3]);
-
   /* add the network interface (IPv4/IPv6) without RTOS */
-  netif_add(&gnetif, &ipaddr, &netmask, &gw, NULL, &ethernetif_init, &ethernet_input);
+  netif_add(&gnetif, &ipaddr, &netmask, &gw, NULL, &ethernetif_init, &tcpip_input);
 
   /* Registers the default network interface */
   netif_set_default(&gnetif);

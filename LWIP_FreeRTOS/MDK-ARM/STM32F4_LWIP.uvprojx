@@ -338,7 +338,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER,STM32F429xx,LWIP_DEBUG</Define>
               <Undefine></Undefine>
-              <IncludePath>../Inc;../Drivers/STM32F4xx_HAL_Driver/Inc;../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy;../Drivers/CMSIS/Device/ST/STM32F4xx/Include;../Drivers/CMSIS/Include;..\Src\BSP;..\Src\BSP\key;..\LwIP\include\compat;..\LwIP\include;..\LwIP\include\lwip;..\LwIP\include\lwip\apps;..\LwIP\include\lwip\priv;..\LwIP\include\lwip\prot;..\LwIP\include\netif;..\LwIP\include\arch;..\FreeRTOS\include;..\FreeRTOS\port\RVDS\ARM_CM4F</IncludePath>
+              <IncludePath>../Inc;../Drivers/STM32F4xx_HAL_Driver/Inc;../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy;../Drivers/CMSIS/Device/ST/STM32F4xx/Include;../Drivers/CMSIS/Include;..\Src\BSP;..\Src\BSP\key;..\LwIP\include\compat;..\LwIP\include;..\LwIP\include\lwip;..\LwIP\include\lwip\apps;..\LwIP\include\lwip\priv;..\LwIP\include\lwip\prot;..\LwIP\include\netif;..\LwIP\include\arch;..\FreeRTOS\include;..\FreeRTOS\port\RVDS\ARM_CM4F;..\LwIP\include</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -423,9 +423,29 @@
               <FilePath>..\Src\test.c</FilePath>
             </File>
             <File>
+              <FileName>app_task.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\app_task.c</FilePath>
+            </File>
+            <File>
               <FileName>FreeRTOSConfig.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Inc\FreeRTOSConfig.h</FilePath>
+            </File>
+            <File>
+              <FileName>lwipopts.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\LwIP\include\arch\lwipopts.h</FilePath>
+            </File>
+            <File>
+              <FileName>cc.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\LwIP\include\arch\cc.h</FilePath>
+            </File>
+            <File>
+              <FileName>sys_arch.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\sys_arch.c</FilePath>
             </File>
           </Files>
         </Group>

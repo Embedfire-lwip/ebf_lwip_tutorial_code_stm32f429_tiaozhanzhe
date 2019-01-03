@@ -56,6 +56,10 @@ extern "C" {
 
 #include "lwip.h"
 
+/* FreeRTOS头文件 */
+#include "FreeRTOS.h"
+#include "task.h"
+
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
@@ -79,7 +83,12 @@ extern "C" {
 /* Exported functions prototypes ---------------------------------------------*/
 void Error_Handler(void);
 
+
 /* USER CODE BEGIN EFP */
+
+extern TaskHandle_t AppTaskCreate_Handle;/* 创建任务句柄 */
+
+void AppTaskCreate(void);/* 用于创建任务 */
 
 /* USER CODE END EFP */
 

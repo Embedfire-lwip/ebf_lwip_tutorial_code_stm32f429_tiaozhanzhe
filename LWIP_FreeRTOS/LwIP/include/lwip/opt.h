@@ -1754,7 +1754,7 @@
  * sys_thread_new() when the thread is created.
  */
 #if !defined TCPIP_THREAD_STACKSIZE || defined __DOXYGEN__
-#define TCPIP_THREAD_STACKSIZE          0
+#define TCPIP_THREAD_STACKSIZE          1024
 #endif
 
 /**
@@ -1763,7 +1763,7 @@
  * sys_thread_new() when the thread is created.
  */
 #if !defined TCPIP_THREAD_PRIO || defined __DOXYGEN__
-#define TCPIP_THREAD_PRIO               1
+#define TCPIP_THREAD_PRIO               2
 #endif
 
 /**
@@ -1839,7 +1839,7 @@
  * to sys_mbox_new() when the recvmbox is created.
  */
 #if !defined DEFAULT_RAW_RECVMBOX_SIZE || defined __DOXYGEN__
-#define DEFAULT_RAW_RECVMBOX_SIZE       0
+#define DEFAULT_RAW_RECVMBOX_SIZE       10
 #endif
 
 /**
@@ -1848,7 +1848,7 @@
  * to sys_mbox_new() when the recvmbox is created.
  */
 #if !defined DEFAULT_UDP_RECVMBOX_SIZE || defined __DOXYGEN__
-#define DEFAULT_UDP_RECVMBOX_SIZE       0
+#define DEFAULT_UDP_RECVMBOX_SIZE       10
 #endif
 
 /**
@@ -1857,7 +1857,7 @@
  * to sys_mbox_new() when the recvmbox is created.
  */
 #if !defined DEFAULT_TCP_RECVMBOX_SIZE || defined __DOXYGEN__
-#define DEFAULT_TCP_RECVMBOX_SIZE       0
+#define DEFAULT_TCP_RECVMBOX_SIZE       10
 #endif
 
 /**
@@ -1866,7 +1866,7 @@
  * sys_mbox_new() when the acceptmbox is created.
  */
 #if !defined DEFAULT_ACCEPTMBOX_SIZE || defined __DOXYGEN__
-#define DEFAULT_ACCEPTMBOX_SIZE         0
+#define DEFAULT_ACCEPTMBOX_SIZE         10
 #endif
 /**
  * @}
