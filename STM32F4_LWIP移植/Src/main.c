@@ -135,7 +135,11 @@ int main(void)
   }
   /* USER CODE END 3 */
 }
-
+void HAL_ETH_RxCpltCallback(ETH_HandleTypeDef *heth)
+{
+  LED2_ON;
+  UNUSED(heth);
+}
 /**
   * @brief System Clock Configuration
   * @retval None
