@@ -178,7 +178,11 @@ void SystemClock_Config(void)
     Error_Handler();
   }
 }
-
+void HAL_ETH_RxCpltCallback(ETH_HandleTypeDef *heth)
+{
+  LED2_TOGGLE;
+  UNUSED(heth);
+}
 /**
   * @brief ETH Initialization Function
   * @param None
