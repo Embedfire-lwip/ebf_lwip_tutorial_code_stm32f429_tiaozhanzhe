@@ -65,24 +65,26 @@ static void iperf_client(void *thread_param)
   while(1)
   {
     conn = netconn_new(NETCONN_TCP);
-    if (conn < 0)
+    if (conn == NULL)
     {
-        printf("create conn failed!\n");
-        vTaskDelay(10);
-        continue;
+      printf("create conn failed!\n");
+      vTaskDelay(10);
+      continue;
     }
+    
     IP4_ADDR(&ipaddr,192,168,1,112);
+    
     ret = netconn_connect(conn,&ipaddr,5001);
     if (ret == -1)
     {
         printf("Connect failed!\n");
         netconn_close(conn);
-
         vTaskDelay(10);
         continue;
     }
     
     printf("Connect to iperf server successful!\n");
+    
     tick1 = sys_now();
     while (1)
     {
