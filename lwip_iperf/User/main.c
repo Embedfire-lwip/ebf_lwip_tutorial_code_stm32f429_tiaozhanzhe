@@ -26,7 +26,7 @@
 #include "task.h"
 #include "queue.h"
 
-#include "tcpecho.h"
+#include "iperf.h"
 
 /**************************** 任务句柄 ********************************/
 /* 
@@ -35,8 +35,7 @@
  * 这个句柄可以为NULL。
  */
 static TaskHandle_t AppTaskCreate_Handle = NULL;/* 创建任务句柄 */
-static TaskHandle_t Test1_Task_Handle = NULL;/* LED任务句柄 */
-static TaskHandle_t Test2_Task_Handle = NULL;/* KEY任务句柄 */
+
 
 /********************************** 内核对象句柄 *********************************/
 /*
@@ -68,9 +67,6 @@ static TaskHandle_t Test2_Task_Handle = NULL;/* KEY任务句柄 */
 *************************************************************************
 */
 static void AppTaskCreate(void);/* 用于创建任务 */
-
-static void Test1_Task(void* pvParameters);/* Test1_Task任务实现 */
-static void Test2_Task(void* pvParameters);/* Test2_Task任务实现 */
 
 extern void TCPIP_Init(void);
 
@@ -116,68 +112,13 @@ int main(void)
   **********************************************************************/
 static void AppTaskCreate(void)
 {
-  BaseType_t xReturn = pdPASS;/* 定义一个创建信息返回值，默认为pdPASS */
   TCPIP_Init();
   iperf_server(NULL);
   taskENTER_CRITICAL();           //进入临界区
-
-//  /* 创建Test1_Task任务 */
-//  xReturn = xTaskCreate((TaskFunction_t )Test1_Task, /* 任务入口函数 */
-//                        (const char*    )"Test1_Task",/* 任务名字 */
-//                        (uint16_t       )512,   /* 任务栈大小 */
-//                        (void*          )NULL,	/* 任务入口函数参数 */
-//                        (UBaseType_t    )1,	    /* 任务的优先级 */
-//                        (TaskHandle_t*  )&Test1_Task_Handle);/* 任务控制块指针 */
-//  if(pdPASS == xReturn)
-//    printf("Create Test1_Task sucess...\r\n");
-//  
-//  /* 创建Test2_Task任务 */
-//  xReturn = xTaskCreate((TaskFunction_t )Test2_Task,  /* 任务入口函数 */
-//                        (const char*    )"Test2_Task",/* 任务名字 */
-//                        (uint16_t       )512,  /* 任务栈大小 */
-//                        (void*          )NULL,/* 任务入口函数参数 */
-//                        (UBaseType_t    )2, /* 任务的优先级 */
-//                        (TaskHandle_t*  )&Test2_Task_Handle);/* 任务控制块指针 */ 
-//  if(pdPASS == xReturn)
-//    printf("Create Test2_Task sucess...\n\n");
   
   vTaskDelete(AppTaskCreate_Handle); //删除AppTaskCreate任务
   
   taskEXIT_CRITICAL();            //退出临界区
-}
-
-
-
-/**********************************************************************
-  * @ 函数名  ： Test1_Task
-  * @ 功能说明： Test1_Task任务主体
-  * @ 参数    ：   
-  * @ 返回值  ： 无
-  ********************************************************************/
-static void Test1_Task(void* parameter)
-{	
-  while (1)
-  {
-    LED1_TOGGLE;
-//    PRINT_DEBUG("LED1_TOGGLE\n");
-    vTaskDelay(1000);/* 延时1000个tick */
-  }
-}
-
-/**********************************************************************
-  * @ 函数名  ： Test2_Task
-  * @ 功能说明： Test2_Task任务主体
-  * @ 参数    ：   
-  * @ 返回值  ： 无
-  ********************************************************************/
-static void Test2_Task(void* parameter)
-{	 
-  while (1)
-  {
-//    LED2_TOGGLE;
-//    PRINT_DEBUG("LED2_TOGGLE\n");
-    vTaskDelay(2000);/* 延时2000个tick */
-  }
 }
 
 

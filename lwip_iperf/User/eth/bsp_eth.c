@@ -221,7 +221,7 @@ void ETH_IRQHandler(void)
 extern xSemaphoreHandle s_xSemaphore;
 void HAL_ETH_RxCpltCallback(ETH_HandleTypeDef *heth)
 {
-  LED2_TOGGLE;
+//  LED2_TOGGLE;
   portBASE_TYPE xHigherPriorityTaskWoken = pdFALSE;
   xSemaphoreGiveFromISR( s_xSemaphore, &xHigherPriorityTaskWoken );
   portYIELD_FROM_ISR(xHigherPriorityTaskWoken);

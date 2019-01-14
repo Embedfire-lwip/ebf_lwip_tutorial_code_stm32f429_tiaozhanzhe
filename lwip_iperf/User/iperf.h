@@ -30,8 +30,8 @@
  *
  */
 
-#ifndef LWIP_TCPECHO_H
-#define LWIP_TCPECHO_H
+#ifndef LWIP_IPERF_H
+#define LWIP_IPERF_H
 
 
 #define TCP_SERVER_THREAD_NAME            "iperf_server"
@@ -42,4 +42,4 @@ void tcpecho_init(void);
 
 void iperf_server(void *thread_param);
 
-#endif /* LWIP_TCPECHO_H */
+#endif /* LWIP_IPERF_H */

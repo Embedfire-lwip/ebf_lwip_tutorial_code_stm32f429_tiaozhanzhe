@@ -395,53 +395,53 @@ static struct pbuf * low_level_input(struct netif *netif)
 }
 
 
-static err_t ethernetif_linkoutput(struct netif *netif, struct pbuf *p)
-{
-  netif = NULL;
-  void *msg;
-  
-  msg = p;
-  
-  if(sys_mbox_trypost(&eth_tx_mb,&msg) == ERR_OK)
-  {
-    PRINT_DEBUG("sys_mbox_trypost ok\n");
-//    xSemaphoreTake(tx_sem,portMAX_DELAY);
-  }
-  
-  
-  return ERR_OK; 
-}
+//static err_t ethernetif_linkoutput(struct netif *netif, struct pbuf *p)
+//{
+//  netif = NULL;
+//  void *msg;
+//  
+//  msg = p;
+//  
+//  if(sys_mbox_trypost(&eth_tx_mb,&msg) == ERR_OK)
+//  {
+//    PRINT_DEBUG("sys_mbox_trypost ok\n");
+////    xSemaphoreTake(tx_sem,portMAX_DELAY);
+//  }
+//  
+//  
+//  return ERR_OK; 
+//}
 
-void ethernetif_output(void *pParams) 
-{
-  void *msg;
-  struct pbuf *p;
-  struct netif *netif;  
-  netif = (struct netif*) pParams;
-  while(1)
-  {
-    if(sys_arch_mbox_fetch(&eth_tx_mb,&msg,0)==ERR_OK)
-    {
-      PRINT_DEBUG("sys_arch_mbox_fetch ok\n");
-      p = (struct pbuf *)msg;
-      
-      if(p!=NULL)
-      {
-        if(low_level_output(netif,p) == ERR_OK)
-        {
-          PRINT_DEBUG("low_level_output ok\n");
-          LED3_TOGGLE;
-        }
-      }
-      
-      /* send ACK */
-//      sys_sem_signal(&tx_sem);
-    }
-//    else
-//      PRINT_DEBUG("not ok\n");
-  }
-  
-}
+//void ethernetif_output(void *pParams) 
+//{
+//  void *msg;
+//  struct pbuf *p;
+//  struct netif *netif;  
+//  netif = (struct netif*) pParams;
+//  while(1)
+//  {
+//    if(sys_arch_mbox_fetch(&eth_tx_mb,&msg,0)==ERR_OK)
+//    {
+//      PRINT_DEBUG("sys_arch_mbox_fetch ok\n");
+//      p = (struct pbuf *)msg;
+//      
+//      if(p!=NULL)
+//      {
+//        if(low_level_output(netif,p) == ERR_OK)
+//        {
+//          PRINT_DEBUG("low_level_output ok\n");
+//          LED3_TOGGLE;
+//        }
+//      }
+//      
+//      /* send ACK */
+////      sys_sem_signal(&tx_sem);
+//    }
+////    else
+////      PRINT_DEBUG("not ok\n");
+//  }
+//  
+//}
 
 
 /**
@@ -455,7 +455,6 @@ void ethernetif_output(void *pParams)
  */
 void ethernetif_input(void *pParams) {
 	struct netif *netif;
-	struct eth_hdr *ethhdr;
 	struct pbuf *p = NULL;
 	netif = (struct netif*) pParams;
   LWIP_DEBUGF(NETIF_DEBUG, ("ethernetif_input: IP input error\n"));

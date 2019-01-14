@@ -122,7 +122,7 @@
 #include <lwip/sockets.h>
 //#include <lwip/select.h>
 //#include "netdb.h"
-#include "tcpecho.h"
+#include "iperf.h"
 
 #include "lwip/opt.h"
 
@@ -322,8 +322,8 @@ void iperf_server(void *thread_param)
 
                 f = (float)(recvlen * configTICK_RATE_HZ / 125 / (tick2 - tick1));
                 f /= 1000.0f;
-                //snprintf(speed, sizeof(speed), "%.4f Mbps!\n", f);
-                //printf("%s", speed);
+                snprintf(speed, sizeof(speed), "%.4f Mbps!\n", f);
+                printf("%s", speed);
                 tick1 = tick2;
                 recvlen = 0;
             }
@@ -424,11 +424,11 @@ int iperf(int argc, char **argv)
             free(param.host);
             param.host = NULL;
         }
-        if (host) param.host = "192.168.1.130";
-
+        if (host) param.host = "192.168.1.122";
+        mode = IPERF_MODE_SERVER;
         if (mode == IPERF_MODE_CLIENT)
         {
-          sys_thread_new(TCP_SERVER_THREAD_NAME, iperf_server, NULL, 2048, 4);
+          sys_thread_new(TCP_SERVER_THREAD_NAME, iperf_client, NULL, 2048, 4);
 
             
         }                        
