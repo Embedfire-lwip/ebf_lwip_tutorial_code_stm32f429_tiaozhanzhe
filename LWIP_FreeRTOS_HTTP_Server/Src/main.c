@@ -102,7 +102,7 @@ int main(void)
     
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
   HAL_Init();
- 
+   
   /* 创建AppTaskCreate任务 */
   xReturn = xTaskCreate((TaskFunction_t )AppTaskCreate,  /* 任务入口函数 */
                         (const char*    )"AppTaskCreate",/* 任务名字 */

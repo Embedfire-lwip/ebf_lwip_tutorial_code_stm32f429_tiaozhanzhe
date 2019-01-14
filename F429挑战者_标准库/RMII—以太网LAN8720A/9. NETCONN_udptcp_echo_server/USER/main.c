@@ -160,7 +160,7 @@ static  void  AppTaskStart (void *p_arg)
   tcpecho_init();
 
   /* Initialize udp echo server */
-  udpecho_init();
+//  udpecho_init();
 	
 #ifdef USE_DHCP
 	 /* Start DHCPClient */

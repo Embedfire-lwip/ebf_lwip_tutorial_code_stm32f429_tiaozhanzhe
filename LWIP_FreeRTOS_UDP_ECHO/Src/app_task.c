@@ -60,24 +60,24 @@ void AppTaskCreate(void)
     
   taskENTER_CRITICAL();           //进入临界区
 
-  /* 创建LED_Task任务 */
-  xReturn = xTaskCreate((TaskFunction_t )LED_Task, /* 任务入口函数 */
-                        (const char*    )"LED_Task",/* 任务名字 */
-                        (uint16_t       )512,   /* 任务栈大小 */
-                        (void*          )NULL,	/* 任务入口函数参数 */
-                        (UBaseType_t    )6,	    /* 任务的优先级 */
-                        (TaskHandle_t*  )&LED_Task_Handle);/* 任务控制块指针 */
-  if(pdPASS == xReturn)
-    printf("创建LED_Task任务成功!\r\n");
-  /* 创建KEY_Task任务 */
-  xReturn = xTaskCreate((TaskFunction_t )KEY_Task,  /* 任务入口函数 */
-                        (const char*    )"KEY_Task",/* 任务名字 */
-                        (uint16_t       )512,  /* 任务栈大小 */
-                        (void*          )NULL,/* 任务入口函数参数 */
-                        (UBaseType_t    )5, /* 任务的优先级 */
-                        (TaskHandle_t*  )&KEY_Task_Handle);/* 任务控制块指针 */ 
-  if(pdPASS == xReturn)
-    printf("创建KEY_Task任务成功!\r\n");
+//  /* 创建LED_Task任务 */
+//  xReturn = xTaskCreate((TaskFunction_t )LED_Task, /* 任务入口函数 */
+//                        (const char*    )"LED_Task",/* 任务名字 */
+//                        (uint16_t       )512,   /* 任务栈大小 */
+//                        (void*          )NULL,	/* 任务入口函数参数 */
+//                        (UBaseType_t    )6,	    /* 任务的优先级 */
+//                        (TaskHandle_t*  )&LED_Task_Handle);/* 任务控制块指针 */
+//  if(pdPASS == xReturn)
+//    printf("创建LED_Task任务成功!\r\n");
+//  /* 创建KEY_Task任务 */
+//  xReturn = xTaskCreate((TaskFunction_t )KEY_Task,  /* 任务入口函数 */
+//                        (const char*    )"KEY_Task",/* 任务名字 */
+//                        (uint16_t       )512,  /* 任务栈大小 */
+//                        (void*          )NULL,/* 任务入口函数参数 */
+//                        (UBaseType_t    )5, /* 任务的优先级 */
+//                        (TaskHandle_t*  )&KEY_Task_Handle);/* 任务控制块指针 */ 
+//  if(pdPASS == xReturn)
+//    printf("创建KEY_Task任务成功!\r\n");
   
   vTaskDelete(AppTaskCreate_Handle); //删除AppTaskCreate任务
   

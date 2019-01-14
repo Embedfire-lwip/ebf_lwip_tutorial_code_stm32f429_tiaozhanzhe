@@ -1092,7 +1092,7 @@
  * transport.
  */
 #if !defined LWIP_DNS || defined __DOXYGEN__
-#define LWIP_DNS                        0
+#define LWIP_DNS                        1
 #endif
 
 /** DNS maximum number of entries to maintain locally. */
@@ -1132,7 +1132,7 @@
 #endif
 
 /* A list of DNS security features follows */
-#define LWIP_DNS_SECURE_RAND_XID                1
+#define LWIP_DNS_SECURE_RAND_XID                0
 #define LWIP_DNS_SECURE_NO_MULTIPLE_OUTSTANDING 2
 #define LWIP_DNS_SECURE_RAND_SRC_PORT           4
 

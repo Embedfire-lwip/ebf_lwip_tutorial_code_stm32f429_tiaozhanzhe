@@ -4,8 +4,7 @@
 
 #include "main.h"
 
-#include "tcpecho.h"
-
+#include "dns-netconn.h"
 /**************************** 任务句柄 ********************************/
 /* 
  * 任务句柄是一个指针，用于指向一个任务，当任务创建好之后，它就具有了一个任务句柄
@@ -161,8 +160,7 @@ static void BSP_Init(void)
 
   /* Initialize all configured peripherals */
   MX_LWIP_Init();
-  
-  tcpecho_init();
+  dns_netconn_init();
   /* USER CODE BEGIN 2 */  
 
 }

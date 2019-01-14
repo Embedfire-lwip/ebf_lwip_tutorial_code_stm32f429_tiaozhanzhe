@@ -39,74 +39,172 @@
 #include "lwip/sys.h"
 #include "lwip/api.h"
 
-#define TCPECHO_THREAD_PRIO  ( 9u )
+#define TCPECHO_THREAD_PRIO  ( 2u )
 
 
 
-/*-----------------------------------------------------------------------------------*/
-static void tcpecho_thread(void *arg)
+///*-----------------------------------------------------------------------------------*/
+//static void tcpecho_thread(void *arg)
+//{
+//  struct netconn *conn, *newconn;
+//  err_t err, accept_err;
+//  struct netbuf *buf;
+//  void *data;
+//  u16_t len;
+//  err_t recv_err;
+//      
+//  LWIP_UNUSED_ARG(arg);
+
+//  /* Create a new connection identifier. */
+//  conn = netconn_new(NETCONN_TCP);
+//  
+//  if (conn!=NULL)
+//  {  
+//    /* Bind connection to well known port number 7. */
+//    err = netconn_bind(conn, NULL, LOCAL_PORT);
+//    
+//    if (err == ERR_OK)
+//    {
+//      /* Tell connection to go into listening mode. */
+//      netconn_listen(conn);
+//    
+//      while (1) 
+//      {
+//        /* Grab new connection. */
+//         accept_err = netconn_accept(conn, &newconn);
+//    
+//        /* Process the new connection. */
+//        if (accept_err == ERR_OK) 
+//        {
+//          recv_err = netconn_recv(newconn, &buf);
+//					while ( recv_err == ERR_OK) 
+//          {
+//            do 
+//            {
+//              netbuf_data(buf, &data, &len);
+//              netconn_write(newconn, data, len, NETCONN_COPY);
+//          
+//            } 
+//            while (netbuf_next(buf) >= 0);
+//          
+//            netbuf_delete(buf);
+//						recv_err = netconn_recv(newconn, &buf);
+//          }
+//        
+//          /* Close connection and discard connection identifier. */
+//          netconn_close(newconn);
+//          netconn_delete(newconn);
+//        }
+//      }
+//    }
+//    else
+//    {
+//      netconn_delete(newconn);
+//      printf(" can not bind TCP netconn");
+//    }
+//  }
+//  else
+//  {
+//    printf("can not create TCP netconn");
+//  }
+//}
+
+static void 
+tcpecho_thread(void *arg)
 {
   struct netconn *conn, *newconn;
-  err_t err, accept_err;
-  struct netbuf *buf;
-  void *data;
-  u16_t len;
-  err_t recv_err;
-      
+  err_t err;
+  uint64_t recvlen;
   LWIP_UNUSED_ARG(arg);
 
   /* Create a new connection identifier. */
+  /* Bind connection to well known port number 7. */
+#if LWIP_IPV6
+  conn = netconn_new(NETCONN_TCP_IPV6);
+  netconn_bind(conn, IP6_ADDR_ANY, 7);
+#else /* LWIP_IPV6 */
   conn = netconn_new(NETCONN_TCP);
-  
-  if (conn!=NULL)
-  {  
-    /* Bind connection to well known port number 7. */
-    err = netconn_bind(conn, NULL, LOCAL_PORT);
-    
-    if (err == ERR_OK)
-    {
-      /* Tell connection to go into listening mode. */
-      netconn_listen(conn);
-    
-      while (1) 
+  netconn_bind(conn, IP_ADDR_ANY, 7);
+#endif /* LWIP_IPV6 */
+  LWIP_ERROR("tcpecho: invalid conn", (conn != NULL), return;);
+
+  /* Tell connection to go into listening mode. */
+  netconn_listen(conn);
+  /* Grab new connection. */
+  err = netconn_accept(conn, &newconn);
+  recvlen = 0;
+  struct netbuf *buf;
+  void *data;
+  u16_t len;
+  u32_t tick1,tick2;
+  char speed[32] = { 0 };
+  tick1 = sys_now();
+  while (1) {
+
+//    /* Grab new connection. */
+//    err = netconn_accept(conn, &newconn);
+    /*printf("accepted new connection %p\n", newconn);*/
+    /* Process the new connection. */
+//    if (err == ERR_OK) {
+
+      if(netconn_recv(newconn, &buf)== ERR_OK)
       {
-        /* Grab new connection. */
-         accept_err = netconn_accept(conn, &newconn);
+//      netbuf_data(buf, &data, &len);
+//      err = netconn_write(newconn, data, len, NETCONN_NOCOPY);
+      len = netbuf_len(buf);
+//      printf("recvlen = %d\n",len);
+      if (len <= 0) break;
     
-        /* Process the new connection. */
-        if (accept_err == ERR_OK) 
-        {
-          recv_err = netconn_recv(newconn, &buf);
-					while ( recv_err == ERR_OK) 
-          {
-            do 
-            {
-              netbuf_data(buf, &data, &len);
-              netconn_write(newconn, data, len, NETCONN_COPY);
-          
-            } 
-            while (netbuf_next(buf) >= 0);
-          
-            netbuf_delete(buf);
-						recv_err = netconn_recv(newconn, &buf);
-          }
-        
-          /* Close connection and discard connection identifier. */
-          netconn_close(newconn);
-          netconn_delete(newconn);
-        }
+      recvlen += len; 
+    
+//      printf("recvlen = %d\n",recvlen);
+    
+      tick2 = sys_now();
+      
+//      printf("1 recvlen = %d\n",recvlen);
+      if(tick2 - tick1 >= OS_CFG_TICK_RATE_HZ * 2)
+      {
+//        printf("recvlen = %d\n",recvlen);
+//        
+        float f;
+        f = (float)(recvlen * OS_CFG_TICK_RATE_HZ / (tick2 - tick1));
+//        f = (float)(recvlen*OS_CFG_TICK_RATE_HZ/(tick2 - tick1));
+        f /= 1000.0f;
+        snprintf(speed, sizeof(speed), "%.4f M!\n",f);
+        printf("%s", speed);
+        tick1 = tick2;
+        recvlen = 0;
+        len = 0;
+//        float f;
+//        f = (float)(recvlen * RT_TICK_PER_SECOND / 125 / (tick2 - tick1));
       }
-    }
-    else
-    {
+       netbuf_delete(buf);
+      }
+//      else
+//      {
+//        
+//        printf("not data\n");
+//        
+//      }
+////      while ((err = netconn_recv(newconn, &buf)) == ERR_OK) {
+//        /*printf("Recved\n");*/
+//        do {
+//             netbuf_data(buf, &data, &len);
+//             err = netconn_write(newconn, data, len, NETCONN_NOCOPY);
+            
+//             printf("len = %d\n",len);
+//#if 0
+//            if (err != ERR_OK) {
+//              printf("tcpecho: netconn_write: error \"%s\"\n", lwip_strerr(err));
+//            }
+//#endif
+//        } while (netbuf_next(buf) >= 0);
+       
+      }
+      /*printf("Got EOF, looping\n");*/ 
+      /* Close connection and discard connection identifier. */
+      netconn_close(newconn);
       netconn_delete(newconn);
-      printf(" can not bind TCP netconn");
-    }
-  }
-  else
-  {
-    printf("can not create TCP netconn");
-  }
 }
 /*-----------------------------------------------------------------------------------*/
 
