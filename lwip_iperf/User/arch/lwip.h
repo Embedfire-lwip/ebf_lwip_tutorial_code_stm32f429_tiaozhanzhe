@@ -85,7 +85,7 @@
 /*Static IP ADDRESS: IP_ADDR0.IP_ADDR1.IP_ADDR2.IP_ADDR3 */
 #define IP_ADDR0                    192
 #define IP_ADDR1                    168
-#define IP_ADDR2                      1
+#define IP_ADDR2                      0
 #define IP_ADDR3                    122
 
 /*NETMASK*/
@@ -97,7 +97,7 @@
 /*Gateway Address*/
 #define GW_ADDR0                    192
 #define GW_ADDR1                    168
-#define GW_ADDR2                      1
+#define GW_ADDR2                      0
 #define GW_ADDR3                      1
 /* USER CODE END 0 */
 

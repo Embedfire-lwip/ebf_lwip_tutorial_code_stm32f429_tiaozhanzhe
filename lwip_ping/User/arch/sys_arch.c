@@ -118,25 +118,17 @@ struct sys_timeouts *sys_arch_timeouts(void)
 
 sys_prot_t sys_arch_protect(void)
 {
-	vPortEnterCritical();
+	vPortEnterCritical();         //进入临界段
 	return 1;
 }
 
 void sys_arch_unprotect(sys_prot_t pval)
 {
 	( void ) pval;
-	vPortExitCritical();
+	vPortExitCritical();      //退出临界段
 }
 
 #if !NO_SYS
-
-//test_sys_arch_waiting_fn the_waiting_fn;
-
-//void
-//test_sys_arch_wait_callback(test_sys_arch_waiting_fn waiting_fn)
-//{
-//  the_waiting_fn = waiting_fn;
-//}
 
 err_t
 sys_sem_new(sys_sem_t *sem, u8_t count)
@@ -144,14 +136,14 @@ sys_sem_new(sys_sem_t *sem, u8_t count)
   /* 创建 sem */
   if(count <= 1)
   {    
-    *sem = xSemaphoreCreateBinary();
+    *sem = xSemaphoreCreateBinary();      //创建二值信号量
     if(count == 1)
     {
-      sys_sem_signal(*sem);
+      sys_sem_signal(*sem);       //新创建的信号量是无效的，需要释放一个信号量
     }
   }
   else
-    *sem = xSemaphoreCreateCounting(count,count);
+    *sem = xSemaphoreCreateCounting(count,count); //创建计数信号量
   
 #if SYS_STATS
 	++lwip_stats.sys.sem.used;
@@ -161,7 +153,7 @@ sys_sem_new(sys_sem_t *sem, u8_t count)
 #endif /* SYS_STATS */
   
   if(*sem != SYS_SEM_NULL)
-    return ERR_OK;
+    return ERR_OK;          //创建成功返回ERR_OK
   else
   {
 #if SYS_STATS
@@ -179,21 +171,21 @@ sys_sem_free(sys_sem_t *sem)
    --lwip_stats.sys.sem.used;
 #endif /* SYS_STATS */
   /* 删除 sem */
-  vSemaphoreDelete(*sem);
-  *sem = SYS_SEM_NULL;
+  vSemaphoreDelete(*sem);   //删除一个信号量
+  *sem = SYS_SEM_NULL;  //删除之后置空
 }
 
 
 int sys_sem_valid(sys_sem_t *sem)                                               
 {
-  return (*sem != SYS_SEM_NULL);                                    
+  return (*sem != SYS_SEM_NULL);   //返回信号量是否有效                             
 }
 
 
 void
 sys_sem_set_invalid(sys_sem_t *sem)
 {
-  *sem = SYS_SEM_NULL;
+  *sem = SYS_SEM_NULL;    //信号量设置为无效    
 }
 
 /* 
@@ -236,7 +228,7 @@ sys_arch_sem_wait(sys_sem_t *sem, u32_t timeout)
 void
 sys_sem_signal(sys_sem_t *sem)
 {
-  if(xSemaphoreGive( *sem ) != pdTRUE)
+  if(xSemaphoreGive( *sem ) != pdTRUE)    //释放信号量
     printf("[sys_arch]:sem signal fail!\n");
 }
 
@@ -244,9 +236,9 @@ err_t
 sys_mutex_new(sys_mutex_t *mutex)
 {
   /* 创建 sem */   
-  *mutex = xSemaphoreCreateMutex();
+  *mutex = xSemaphoreCreateMutex(); //创建互斥量
   if(*mutex != SYS_MRTEX_NULL)
-    return ERR_OK;
+    return ERR_OK;      //创建成功返回ERR_OK
   else
   {
     printf("[sys_arch]:new mutex fail!\n");
@@ -257,13 +249,13 @@ sys_mutex_new(sys_mutex_t *mutex)
 void
 sys_mutex_free(sys_mutex_t *mutex)
 {
-  vSemaphoreDelete(*mutex);
+  vSemaphoreDelete(*mutex);   //删除互斥量
 }
 
 void
 sys_mutex_set_invalid(sys_mutex_t *mutex)
 {
-  *mutex = SYS_MRTEX_NULL;
+  *mutex = SYS_MRTEX_NULL;    //设置互斥量为无效
 }
 
 void
@@ -285,13 +277,13 @@ sys_thread_new(const char *name, lwip_thread_fn function, void *arg, int stacksi
 {
   sys_thread_t handle = NULL;
   BaseType_t xReturn = pdPASS;
-  /* 创建MidPriority_Task任务 */
-  xReturn = xTaskCreate((TaskFunction_t )function,  /* 任务入口函数 */
-                        (const char*    )name,/* 任务名字 */
-                        (uint16_t       )stacksize,  /* 任务栈大小 */
-                        (void*          )arg,/* 任务入口函数参数 */
-                        (UBaseType_t    )prio, /* 任务的优先级 */
-                        (TaskHandle_t*  )&handle);/* 任务控制块指针 */ 
+  /* 创建一个线程 */
+  xReturn = xTaskCreate((TaskFunction_t )function,  /* 线程入口函数 */
+                        (const char*    )name,/* 线程名字 */
+                        (uint16_t       )stacksize,  /* 线程栈大小 */
+                        (void*          )arg,/* 线程入口函数参数 */
+                        (UBaseType_t    )prio, /* 线程的优先级 */
+                        (TaskHandle_t*  )&handle);/* 线程控制块指针 */ 
   if(xReturn != pdPASS)
   {
     printf("[sys_arch]:create task fail!err:%#lx\n",xReturn);
@@ -303,8 +295,8 @@ sys_thread_new(const char *name, lwip_thread_fn function, void *arg, int stacksi
 err_t
 sys_mbox_new(sys_mbox_t *mbox, int size)
 {
-    /* 创建Test_Queue */
-  *mbox = xQueueCreate((UBaseType_t ) size,/* 消息队列的长度 */
+  /* 创建一个邮箱 */
+  *mbox = xQueueCreate((UBaseType_t ) size,/* 邮箱的长度 */
                        (UBaseType_t ) sizeof(void *));/* 消息的大小 */
 #if SYS_STATS
       ++lwip_stats.sys.mbox.used;
@@ -313,7 +305,7 @@ sys_mbox_new(sys_mbox_t *mbox, int size)
 	  }
 #endif /* SYS_STATS */
 	if(NULL == *mbox)
-    return ERR_MEM;
+    return ERR_MEM;   // 创建成功返回ERR_OK
   
   return ERR_OK;
 }
@@ -328,11 +320,9 @@ sys_mbox_free(sys_mbox_t *mbox)
 #if SYS_STATS
 	    lwip_stats.sys.mbox.err++;
 #endif /* SYS_STATS */
-
-		// TODO notify the user of failure.
 	}
   
-  vQueueDelete(*mbox);
+  vQueueDelete(*mbox);    //删除一个邮箱
   
 #if SYS_STATS
      --lwip_stats.sys.mbox.used;
@@ -341,7 +331,7 @@ sys_mbox_free(sys_mbox_t *mbox)
 
 int sys_mbox_valid(sys_mbox_t *mbox)          
 {      
-  if (*mbox == SYS_MBOX_NULL) 
+  if (*mbox == SYS_MBOX_NULL)     //判断邮箱是否有效
     return 0;
   else
     return 1;
@@ -350,13 +340,13 @@ int sys_mbox_valid(sys_mbox_t *mbox)
 void
 sys_mbox_set_invalid(sys_mbox_t *mbox)
 {
-  *mbox = SYS_MBOX_NULL; 
+  *mbox = SYS_MBOX_NULL;  //设置有效为无效状态
 }
 
 void
 sys_mbox_post(sys_mbox_t *q, void *msg)
 {
-  while(xQueueSend( *q, /* 消息队列的句柄 */
+  while(xQueueSend( *q, /* 邮箱的句柄 */
                     &msg,/* 发送的消息内容 */
                     portMAX_DELAY) != pdTRUE); /* 等待时间 */
 }
@@ -364,16 +354,33 @@ sys_mbox_post(sys_mbox_t *q, void *msg)
 err_t
 sys_mbox_trypost(sys_mbox_t *q, void *msg)
 {
-  if(xQueueSend(*q,&msg,0) == pdPASS)  
+  if(xQueueSend(*q,&msg,0) == pdPASS)  //尝试发送一个消息，非阻塞发送
     return ERR_OK;
   else
     return ERR_MEM;
 }
 
 err_t
-sys_mbox_trypost_fromisr(sys_mbox_t *q, void *msg)
+sys_mbox_trypost_fromisr(sys_mbox_t *q, void *msg)  
 {
-  return sys_mbox_trypost(q, msg);
+  uint32_t ulReturn;
+  err_t err = ERR_MEM;
+  BaseType_t pxHigherPriorityTaskWoken;
+  
+  /* 进入临界段，临界段可以嵌套 */
+  ulReturn = taskENTER_CRITICAL_FROM_ISR();
+  
+  if(xQueueSendFromISR(*q,&msg,&pxHigherPriorityTaskWoken)==pdPASS)
+  {
+    err = ERR_OK;
+  }
+  //如果需要的话进行一次线程切换
+  portYIELD_FROM_ISR(pxHigherPriorityTaskWoken);
+  
+/* 退出临界段 */
+  taskEXIT_CRITICAL_FROM_ISR( ulReturn );
+  
+  return err;
 }
 
 u32_t

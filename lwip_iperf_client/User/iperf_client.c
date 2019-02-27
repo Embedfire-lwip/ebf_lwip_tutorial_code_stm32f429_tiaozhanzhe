@@ -72,7 +72,7 @@ static void iperf_client(void *thread_param)
       continue;
     }
     
-    IP4_ADDR(&ipaddr,192,168,1,112);
+    IP4_ADDR(&ipaddr,192,168,0,181);
     
     ret = netconn_connect(conn,&ipaddr,5001);
     if (ret == -1)
