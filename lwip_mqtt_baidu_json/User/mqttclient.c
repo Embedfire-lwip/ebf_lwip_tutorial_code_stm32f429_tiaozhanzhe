@@ -13,7 +13,7 @@
 
 #include "lwip/sockets.h"
 
-#include "cJSON.h"
+#include "cJSON_Process.h"
 
 //定义用户消息结构体
 MQTT_USER_MSG  mqtt_user_msg;
@@ -494,9 +494,13 @@ void mqtt_thread(void *pvParameters)
 		int32_t buflen = sizeof(buf),type,ret;
     fd_set readfd;
 	  struct timeval tv;      //等待时间
-	  tv.tv_sec = 10;
-	  tv.tv_usec = 0;
-	
+	  tv.tv_sec = 0;
+	  tv.tv_usec = 100;
+    
+    //初始化json数据
+    cJSON* cJSON_Data = NULL;
+    cJSON_Data = cJSON_Data_Init();
+  
 MQTT_START: 
 		//创建网络连接
 		PRINT_DEBUG("1.开始连接对应云平台的服务器...\n");
@@ -567,21 +571,33 @@ MQTT_START:
 						}
 				}
 				
-				//每隔5秒就推送一次消息
-				if((xTaskGetTickCount() - pubtick) >(5000))
+				//每隔3s更新一次数据
+				if((xTaskGetTickCount() - pubtick) > (3000))
 				{
 					  pubtick = xTaskGetTickCount();
             
-						//发布消息
-					  ret = MQTTMsgPublish(mysock,(char*)TOPIC,QOS0,(uint8_t*)TEST_MESSAGE);
-					  if(ret >= 0)
-						{
-								//表明有数据交换
-								no_mqtt_msg_exchange = 0;
-								//获取当前滴答，作为心跳包起始时间
-								curtick = xTaskGetTickCount();				
-						}
-					
+//          //更新数据
+            double data = 123.2;    //用double类型，否则精度不够
+            char* p ;
+            p = cJSON_Update(cJSON_Data,NAME,"abc");
+//          char* p = cJSON_Update(cJSON_Data,BOOL,&data);
+            p = cJSON_Update(cJSON_Data,NUMBER,&data);
+            if(p != NULL)
+            {
+                //发布消息
+                ret = MQTTMsgPublish(mysock,(char*)TOPIC,QOS0,(uint8_t*)p);
+                if(ret >= 0)
+                {
+                    //表明有数据交换
+                    no_mqtt_msg_exchange = 0;
+                    //获取当前滴答，作为心跳包起始时间
+                    curtick = xTaskGetTickCount();				
+                }
+                vPortFree(p);
+                p = NULL;
+            }
+            else
+              PRINT_DEBUG("update fail\n");
 				}
 		 
 			//这里主要目的是定时向服务器发送PING保活命令
@@ -620,6 +636,6 @@ MQTT_reconnect:
 void
 mqtt_thread_init(void)
 {
-  sys_thread_new("iperf_client", mqtt_thread, NULL, 2048, 4);
+  sys_thread_new("iperf_client", mqtt_thread, NULL, 2048, 6);
 }
 

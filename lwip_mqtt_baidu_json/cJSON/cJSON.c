@@ -44,6 +44,8 @@
 #include <limits.h>
 #include <ctype.h>
 
+#include "FreeRTOS.h"
+
 #ifdef ENABLE_LOCALES
 #include <locale.h>
 #endif
@@ -128,20 +130,23 @@ typedef struct internal_hooks
 /* work around MSVC error C2322: '...' address of dillimport '...' is not static */
 static void * CJSON_CDECL internal_malloc(size_t size)
 {
-    return malloc(size);
+//    return malloc(size);
+    return pvPortMalloc(size);
 }
 static void CJSON_CDECL internal_free(void *pointer)
 {
-    free(pointer);
+//    free(pointer);
+    vPortFree(pointer);
 }
 static void * CJSON_CDECL internal_realloc(void *pointer, size_t size)
 {
-    return realloc(pointer, size);
+//    return realloc(pointer, size);
+  return NULL;
 }
 #else
-#define internal_malloc malloc
-#define internal_free free
-#define internal_realloc realloc
+#define internal_malloc pvPortMalloc
+#define internal_free vPortFree
+#define internal_realloc 
 #endif
 
 static internal_hooks global_hooks = { internal_malloc, internal_free, internal_realloc };

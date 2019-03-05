@@ -4,10 +4,10 @@
 
 
 
-#define MSG_MAX_LEN    300
-#define MSG_TOPIC_LEN  50
-#define  KEEPLIVE_TIME 50
-#define   MQTT_VERSION  4
+#define   MSG_MAX_LEN     500
+#define   MSG_TOPIC_LEN   50
+#define   KEEPLIVE_TIME   20
+#define   MQTT_VERSION    4
 
 #define   HOST_IP       "14.215.190.20"     //服务器IP地址
 #define   HOST_PORT     1883    //由于是TCP连接，端口必须是1883

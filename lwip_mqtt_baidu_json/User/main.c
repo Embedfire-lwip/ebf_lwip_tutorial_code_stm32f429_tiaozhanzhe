@@ -26,6 +26,7 @@
 #include "task.h"
 #include "queue.h"
 #include "mqttclient.h"
+#include "cJSON_Process.h"
 /**************************** 任务句柄 ********************************/
 /* 
  * 任务句柄是一个指针，用于指向一个任务，当任务创建好之后，它就具有了一个任务句柄
@@ -71,6 +72,7 @@ static void Test1_Task(void* pvParameters);/* Test1_Task任务实现 */
 static void Test2_Task(void* pvParameters);/* Test2_Task任务实现 */
 
 extern void TCPIP_Init(void);
+
 
 /*****************************************************************
   * @brief  主函数
@@ -125,12 +127,12 @@ static void AppTaskCreate(void)
   /* 创建Test1_Task任务 */
   xReturn = xTaskCreate((TaskFunction_t )Test1_Task, /* 任务入口函数 */
                         (const char*    )"Test1_Task",/* 任务名字 */
-                        (uint16_t       )512,   /* 任务栈大小 */
+                        (uint16_t       )2048,   /* 任务栈大小 */
                         (void*          )NULL,	/* 任务入口函数参数 */
                         (UBaseType_t    )1,	    /* 任务的优先级 */
                         (TaskHandle_t*  )&Test1_Task_Handle);/* 任务控制块指针 */
-//  if(pdPASS == xReturn)
-//    PRINT_DEBUG("Create Test1_Task sucess...\r\n");
+  if(pdPASS == xReturn)
+    PRINT_DEBUG("Create Test1_Task sucess...\r\n");
   
   /* 创建Test2_Task任务 */
   xReturn = xTaskCreate((TaskFunction_t )Test2_Task,  /* 任务入口函数 */
@@ -139,8 +141,8 @@ static void AppTaskCreate(void)
                         (void*          )NULL,/* 任务入口函数参数 */
                         (UBaseType_t    )2, /* 任务的优先级 */
                         (TaskHandle_t*  )&Test2_Task_Handle);/* 任务控制块指针 */ 
-//  if(pdPASS == xReturn)
-//    PRINT_DEBUG("Create Test2_Task sucess...\n\n");
+  if(pdPASS == xReturn)
+    PRINT_DEBUG("Create Test2_Task sucess...\n\n");
   
   vTaskDelete(AppTaskCreate_Handle); //删除AppTaskCreate任务
   
@@ -157,6 +159,7 @@ static void AppTaskCreate(void)
   ********************************************************************/
 static void Test1_Task(void* parameter)
 {	
+  cJSON_Data_Init();
   while (1)
   {
     LED1_TOGGLE;

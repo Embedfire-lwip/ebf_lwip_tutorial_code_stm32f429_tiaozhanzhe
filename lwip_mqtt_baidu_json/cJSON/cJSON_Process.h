@@ -3,27 +3,18 @@
 #include "cJSON.h"
 #include "stdint.h"
 
-typedef struct cJSON *cJSON_t;
 
-typedef struct cJSON_Item {
-	struct cJSON_Item *next,*prev;	
-  uint8_t type;
-	char *name;		
-	union {
-		double valuedouble;
-		char *valuestring;
-		struct cJSON_Item *child;
-	};
-}cJSON_Item;
+#define   NAME          "name"     
+#define   NUMBER        "number"  
+#define   BOOL          "bool" 
 
-//typedef enum {
-//  cJSON_Str = 0,
-//  cJSON_Num,
-//  cJSON_Double,
-//  number_of_type, /* 触发回调的事件 */
-//}cJSON_Type;
+#define   DEFAULT_NAME          "fire"     
+#define   DEFAULT_NUMBER        123.3  
+#define   DEFAULT_BOOL          1 
 
 
+cJSON* cJSON_Data_Init(void);
+char* cJSON_Update(const cJSON * const object,const char * const string,void * d);
 
 #endif
 
