@@ -10,11 +10,13 @@
 
 #define   DEFAULT_NAME          "fire"     
 #define   DEFAULT_NUMBER        123.3  
-#define   DEFAULT_BOOL          1 
+#define   DEFAULT_BOOL          0 
 
+#define   UPDATE_SUCCESS       1 
+#define   UPDATE_FAIL          0
 
 cJSON* cJSON_Data_Init(void);
-char* cJSON_Update(const cJSON * const object,const char * const string,void * d);
-
+uint8_t cJSON_Update(const cJSON * const object,const char * const string,void * d);
+void Proscess(void* data);
 #endif
 

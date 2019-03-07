@@ -1,7 +1,7 @@
 #ifndef __MALLOC_H
 #define __MALLOC_H
 #include "stm32f4xx.h"
-
+#include "lwipopts.h"
 
 
 #define   MSG_MAX_LEN     500
@@ -9,7 +9,14 @@
 #define   KEEPLIVE_TIME   20
 #define   MQTT_VERSION    4
 
-#define   HOST_IP       "14.215.190.20"     //服务器IP地址
+#ifdef    LWIP_DNS
+#define   HOST_NAME       "ax44gi4.mqtt.iot.gz.baidubce.com"     //服务器域名
+#else
+#define   HOST_NAME       "14.215.190.20"     //服务器IP地址
+#endif
+
+
+//#define   HOST_IP       "129.204.201.235"
 #define   HOST_PORT     1883    //由于是TCP连接，端口必须是1883
 
 #define   CLIENT_ID     "client_ID"         //随机的id

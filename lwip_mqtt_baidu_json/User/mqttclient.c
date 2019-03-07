@@ -197,7 +197,7 @@ void UserMsgCtl(MQTT_USER_MSG  *msg)
 		PRINT_DEBUG("MQTT>>消息主题：%s\n",msg->topic);	
 		PRINT_DEBUG("MQTT>>消息类容：%s\n",msg->msg);	
 		PRINT_DEBUG("MQTT>>消息长度：%d\n",msg->msglenth);	 
-	
+    Proscess(msg->msg);
 	  //处理完后销毁数据
 	  msg->valid  = 0;
 }
@@ -496,19 +496,27 @@ void mqtt_thread(void *pvParameters)
 	  struct timeval tv;      //等待时间
 	  tv.tv_sec = 0;
 	  tv.tv_usec = 100;
-    
+    char* host_ip;
     //初始化json数据
     cJSON* cJSON_Data = NULL;
     cJSON_Data = cJSON_Data_Init();
+#ifdef  LWIP_DNS
+    ip4_addr_t dns_ip;
+    netconn_gethostbyname(HOST_NAME, &dns_ip);
+    host_ip = ip_ntoa(&dns_ip);
+  PRINT_DEBUG("host name : %s , host_ip : %s\n",HOST_NAME,host_ip);
+#else
+    host_ip = HOST_NAME;
+#endif  
   
 MQTT_START: 
 		//创建网络连接
 		PRINT_DEBUG("1.开始连接对应云平台的服务器...\n");
-    PRINT_DEBUG("服务器IP地址：%s，端口号：%0d！\n",HOST_IP,HOST_PORT);
+    PRINT_DEBUG("服务器IP地址：%s，端口号：%0d！\n",host_ip,HOST_PORT);
 		while(1)
 		{
 				//连接服务器
-				mysock = transport_open((int8_t*)HOST_IP,HOST_PORT);
+				mysock = transport_open((int8_t*)host_ip,HOST_PORT);
 				//如果连接服务器成功
 				if(mysock >= 0)
 				{
@@ -577,13 +585,18 @@ MQTT_START:
 					  pubtick = xTaskGetTickCount();
             
 //          //更新数据
-            double data = 123.2;    //用double类型，否则精度不够
-            char* p ;
-            p = cJSON_Update(cJSON_Data,NAME,"abc");
-//          char* p = cJSON_Update(cJSON_Data,BOOL,&data);
-            p = cJSON_Update(cJSON_Data,NUMBER,&data);
-            if(p != NULL)
+            int b_data = 200;
+            double d_data = 123.3;    //用double类型，否则精度不够
+            uint8_t res;
+          
+            res =cJSON_Update(cJSON_Data,NAME,"abc");
+            res =cJSON_Update(cJSON_Data,BOOL,&b_data);
+            res = cJSON_Update(cJSON_Data,NUMBER,&d_data);
+
+            if(UPDATE_SUCCESS == res)
             {
+                //更新数据成功，
+                char* p = cJSON_Print(cJSON_Data);
                 //发布消息
                 ret = MQTTMsgPublish(mysock,(char*)TOPIC,QOS0,(uint8_t*)p);
                 if(ret >= 0)

@@ -30,8 +30,7 @@ cJSON* cJSON_Data_Init(void)
   return cJSON_Root;
   
 }
-
-char* cJSON_Update(const cJSON * const object,const char * const string,void *d)
+uint8_t cJSON_Update(const cJSON * const object,const char * const string,void *d)
 {
   cJSON* node = NULL;    //json根节点
   node = cJSON_GetObjectItem(object,string);
@@ -42,14 +41,14 @@ char* cJSON_Update(const cJSON * const object,const char * const string,void *d)
     int *b = (int*)d;
 //    printf ("d = %d",*b);
     cJSON_GetObjectItem(object,string)->type = *b ? cJSON_True : cJSON_False;
-    char* p = cJSON_Print(object);    /*p 指向的字符串是json格式的*/
-    return p;
+//    char* p = cJSON_Print(object);    /*p 指向的字符串是json格式的*/
+    return 1;
   }
   else if(cJSON_IsString(node))
   {
     cJSON_GetObjectItem(object,string)->valuestring = (char*)d;
-    char* p = cJSON_Print(object);    /*p 指向的字符串是json格式的*/
-    return p;
+//    char* p = cJSON_Print(object);    /*p 指向的字符串是json格式的*/
+    return 1;
   }
   else if(cJSON_IsNumber(node))
   {
@@ -57,83 +56,31 @@ char* cJSON_Update(const cJSON * const object,const char * const string,void *d)
     printf ("num = %f",*num);
     cJSON_GetObjectItem(object,string)->valueint = (double)*num;
     cJSON_GetObjectItem(object,string)->valuedouble = (double)*num;
-    char* p = cJSON_Print(object);    /*p 指向的字符串是json格式的*/
-    return p;
+//    char* p = cJSON_Print(object);    /*p 指向的字符串是json格式的*/
+    return 1;
   }
   else
-    return NULL;
+    return 1;
 }
 
-//char *makeJson()
-//{
-//    char * p;
-//    char * q;
-//    cJSON * cJSON_Root = NULL;    //json根节点
-//    cJSON_Root = cJSON_CreateObject();   /*创建项目*/
-//    if(NULL == cJSON_Root)
-//    {
-//        return NULL;
-//    }
-//    cJSON_AddStringToObject(cJSON_Root, "hello", "hello world"); /*添加元素  键值对*/
-//    cJSON_AddNumberToObject(cJSON_Root, "number", 10010);
-//    cJSON_AddBoolToObject(cJSON_Root, "bool", 1);
+void Proscess(void* data)
+{
+  PRINT_DEBUG("开始解析JSON数据");
+  cJSON *root,*json_name,*json_num,*json_bool;
+  root = cJSON_Parse((char*)data); //解析成json形式
+  
+  json_name = cJSON_GetObjectItem( root , NAME);  //获取键值内容
+  json_num = cJSON_GetObjectItem( root , NUMBER );
+  json_bool = cJSON_GetObjectItem( root , BOOL );
 
-//    cJSON * pSubJson = NULL;
-//    pSubJson = cJSON_CreateObject();    /*创建项目*/
-//    if(NULL == pSubJson)
-//    {
-//        cJSON_Delete(cJSON_Root);
-//        return NULL;
-//    }
-//    cJSON_AddStringToObject(pSubJson, "subjsonobj", "a sub json string");  /*添加元素 键值对*/
-//    cJSON_AddItemToObject(cJSON_Root, "subobj", pSubJson);   /*将新创建的pSubJson加入cJSON_Root列表中*/
+  PRINT_DEBUG("name:%s\n number:%f\n bool:%d\n",
+              json_name->valuestring,
+              json_num->valuedouble,
+              json_bool->valueint);
 
-//    p = cJSON_Print(cJSON_Root);  /*p 指向的字符串是json格式的*/
-//    
-//    printf("1:%s\n", p);
-//    
-//    vPortFree(p);
-//    p = NULL;
-////    
-//    cJSON_GetObjectItem(cJSON_Root,"number")->valueint = 10;
-//    cJSON_GetObjectItem(cJSON_Root,"number")->valuedouble = 10;
-//    q = cJSON_Print(cJSON_Root);  /*p 指向的字符串是json格式的*/
-//    printf("2:%s\n", q);
-//    
-//    vPortFree(q);
-//    q = NULL;
-//    if(NULL == p)
-//    {
-//        //convert json list to string faild, exit
-//        //because sub json pSubJson han been add to cJSON_Root, so just delete cJSON_Root, if you also delete pSubJson, it will coredump, and error is : double free
-//        cJSON_Delete(cJSON_Root);   /*不能删除pSubJson*/
-//        return NULL;
-//    }
+  cJSON_Delete(root);  //释放内存 
+}
 
-//    cJSON_Delete(cJSON_Root);    /*删除列表   这个内存和cJSON_Print返回的内存不一样*/
-
-//    
-//    
-//    return 0;
-//}
-
-
-//void test(void)
-//{
-//  cJSON_Item test;
-//  
-//  cJSON_Item test1;
-//  
-//  test.type = cJSON_Number;
-//  test.name = "abc";
-//  test.valuedouble = 123;
-//  
-//  test1.type = cJSON_String;
-//  test1.name = "def";
-//  test1.valuestring = "test1"; 
-//  
-//  test.child = &test1;
-//}
 
 
 
