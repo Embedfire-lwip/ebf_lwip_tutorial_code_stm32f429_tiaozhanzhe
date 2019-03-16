@@ -494,14 +494,14 @@ void ethernetif_input(void *pParams) {
     if(xSemaphoreTake( s_xSemaphore, portMAX_DELAY ) == pdTRUE)
     {
       /* move received packet into a new pbuf */
-//      taskENTER_CRITICAL();
+      taskENTER_CRITICAL();
 TRY_GET_NEXT_FRAGMENT:
       p = low_level_input(netif);
-//      taskEXIT_CRITICAL();
+      taskEXIT_CRITICAL();
       /* points to packet payload, which starts with an Ethernet header */
       if(p != NULL)
       {
-//        taskENTER_CRITICAL();
+        taskENTER_CRITICAL();
         /* full packet send to tcpip_thread to process */
         if (netif->input(p, netif) != ERR_OK)
         {
@@ -514,7 +514,7 @@ TRY_GET_NEXT_FRAGMENT:
           xSemaphoreTake( s_xSemaphore, 0);
           goto TRY_GET_NEXT_FRAGMENT;
         }
-//        taskEXIT_CRITICAL();
+        taskEXIT_CRITICAL();
       }
     }
 	}

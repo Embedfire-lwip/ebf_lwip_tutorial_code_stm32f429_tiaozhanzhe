@@ -14,14 +14,15 @@
 static const char http_html_hdr[] = "HTTP/1.1 200 OK\r\nContent-type: text/html\r\n\r\n";
 
 static const char http_index_html[] = "<html><head><title>Congrats!</title></head>\
-                                       <body><h1 align=\"center\">Welcome to Fire lwIP HTTP Server!</h1>\
+                                       <body><h1 align=\"center\">Hello World!</h1>\
+                                       <h2 align=\"center\">Welcome to Fire lwIP HTTP Server!</h1>\
                                        <p align=\"center\">This is a small test page, served by httpserver-netconn.</p>\
                                        <p align=\"center\"><a href=\"http://www.firebbs.cn/forum.php/\"> <font size=\"6\"> Ò°»ðµç×ÓÂÛÌ³ </font> </a></p>\
                                        <a href=\"http://www.firebbs.cn/forum.php/\">\
-                                       <img src=\"http://www.firebbs.cn/data/attachment/portal/201806/05/163015rhz7mbgbt0zfujzh.jpg\"/></a>\
+                                       <p align=\"center\"><img src=\"https://jiejietop.cn/content/images/2019/02/5391a36ba3f3d.jpg\" height=\"664\" width=\"1000\" /></a>\
                                        </body></html>";
 
-/** Serve one HTTP connection accepted in the http thread */
+/** Serve one HTTP connection accepted in the http thread */    //http://www.firebbs.cn/data/attachment/portal/201806/05/163015rhz7mbgbt0zfujzh.jpg
 static void
 http_server_netconn_serve(struct netconn *conn)
 {

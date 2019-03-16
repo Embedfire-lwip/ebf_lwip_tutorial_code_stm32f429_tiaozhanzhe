@@ -465,6 +465,7 @@ void ethernetif_input(void *pParams) {
     {
       /* move received packet into a new pbuf */
       taskENTER_CRITICAL();
+TRY_GET_NEXT_FRAGMENT:
       p = low_level_input(netif);
       taskEXIT_CRITICAL();
       /* points to packet payload, which starts with an Ethernet header */
@@ -477,6 +478,11 @@ void ethernetif_input(void *pParams) {
           LWIP_DEBUGF(NETIF_DEBUG, ("ethernetif_input: IP input error\n"));
           pbuf_free(p);
           p = NULL;
+        }
+        else
+        {
+          xSemaphoreTake( s_xSemaphore, 0);
+          goto TRY_GET_NEXT_FRAGMENT;
         }
         taskEXIT_CRITICAL();
       }

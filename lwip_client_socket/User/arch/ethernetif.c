@@ -326,7 +326,7 @@ static struct pbuf * low_level_input(struct netif *netif)
   /* get received frame */
   if (HAL_ETH_GetReceivedFrame(&heth) != HAL_OK)
   {
-    PRINT_ERR("receive frame faild\n");
+//    PRINT_ERR("receive frame faild\n");
     return NULL;
   }
   /* Obtain the size of the packet and put it into the "len" variable. */
@@ -465,6 +465,7 @@ void ethernetif_input(void *pParams) {
     {
       /* move received packet into a new pbuf */
       taskENTER_CRITICAL();
+TRY_GET_NEXT_FRAGMENT:
       p = low_level_input(netif);
       taskEXIT_CRITICAL();
       /* points to packet payload, which starts with an Ethernet header */
@@ -478,12 +479,16 @@ void ethernetif_input(void *pParams) {
           pbuf_free(p);
           p = NULL;
         }
+        else
+        {
+          xSemaphoreTake( s_xSemaphore, 0);
+          goto TRY_GET_NEXT_FRAGMENT;
+        }
         taskEXIT_CRITICAL();
       }
     }
 	}
 }
-
 
 #if !LWIP_ARP
 /**
