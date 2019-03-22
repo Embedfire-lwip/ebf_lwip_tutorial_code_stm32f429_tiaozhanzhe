@@ -664,7 +664,7 @@ MQTT_SEND_START:
       {
         a = recv_data->temperature;
         b = recv_data->humidity;
-        printf("a = %f,b = %f\n",a,b);
+//        printf("a = %f,b = %f\n",a,b);
         //更新数据      
         res = cJSON_Update(cJSON_Data,TEMP_NUM,&a);
         res = cJSON_Update(cJSON_Data,HUM_NUM,&b);

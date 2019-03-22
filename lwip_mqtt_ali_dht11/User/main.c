@@ -184,14 +184,14 @@ static void Test1_Task(void* parameter)
     send_data = &DHT11_Data;
     if(SUCCESS == res)
     {
-      printf("humidity = %f , temperature = %f\n",
-             DHT11_Data.humidity,DHT11_Data.temperature);
+//      printf("humidity = %f , temperature = %f\n",
+//             DHT11_Data.humidity,DHT11_Data.temperature);
 //      printf("发送消息send_data1！\n");
       xReturn = xQueueSend( MQTT_Data_Queue, /* 消息队列的句柄 */
                             &send_data,/* 发送的消息内容 */
                             0 );        /* 等待时间 0 */
-      if(xReturn == pdTRUE)
-        PRINT_DEBUG("发送消息数据成功\n");
+//      if(xReturn == pdTRUE)
+//        PRINT_DEBUG("发送消息数据成功\n");
     }
 
     LED1_TOGGLE;

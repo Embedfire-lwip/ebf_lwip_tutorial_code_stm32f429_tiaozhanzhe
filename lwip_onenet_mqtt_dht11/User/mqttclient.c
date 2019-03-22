@@ -641,7 +641,7 @@ MQTT_START:
 						}
 				}
 //        vTaskDelay(1000);
-        PRINT_INFO("1:%s,%d\r\n",__FILE__,__LINE__);
+//        PRINT_INFO("1:%s,%d\r\n",__FILE__,__LINE__);
         //这里主要目的是定时向服务器发送PING保活命令
         if((xTaskGetTickCount() - curtick) >(KEEPLIVE_TIME/2*1000))
         {
@@ -706,7 +706,7 @@ MQTT_SEND_START:
         b = recv_data->humidity;
 //        a = 22;
 //        b = 70;
-        PRINT_DEBUG("a = %f,b = %f\n",a,b);
+//        PRINT_DEBUG("a = %f,b = %f\n",a,b);
         //更新数据      
         res = cJSON_Update(cJSON_Data,TEMP_NUM,&a);
         res = cJSON_Update(cJSON_Data,HUM_NUM,&b);
@@ -719,28 +719,29 @@ MQTT_SEND_START:
            ret = MQTTMsgPublish2dp(MQTT_Socket,QOS0,1,(uint8_t*)p);
            if(ret >= 0)
            {
-               printf("表明有数据交换\n");
+//               printf("表明有数据交换\n");
                //表明有数据交换
                no_mqtt_msg_exchange = 0;
                //获取当前滴答，作为心跳包起始时间
                curtick = xTaskGetTickCount();				
            }
-//            ret = MQTTMsgPublish(MQTT_Socket,(char*)TOPIC,QOS0,(uint8_t*)p,data_len);
-//            if(ret >= 0)
-//            {
+           uint16_t data_len = strlen((char *)p);
+            ret = MQTTMsgPublish(MQTT_Socket,(char*)TOPIC,QOS0,(uint8_t*)p,data_len);
+            if(ret >= 0)
+            {
 //              printf("表明有数据交换\n");
-//                //表明有数据交换
-//                no_mqtt_msg_exchange = 0;
-//                //获取当前滴答，作为心跳包起始时间
-//                curtick = xTaskGetTickCount();				
-//            }
+                //表明有数据交换
+                no_mqtt_msg_exchange = 0;
+                //获取当前滴答，作为心跳包起始时间
+                curtick = xTaskGetTickCount();				
+            }
             vPortFree(p);
             p = NULL;
         }
         else
           PRINT_DEBUG("update fail\n");
       }
-      PRINT_INFO("1:%s,%d\r\n",__FILE__,__LINE__);
+//      PRINT_INFO("1:%s,%d\r\n",__FILE__,__LINE__);
       //这里主要目的是定时向服务器发送PING保活命令
       if((xTaskGetTickCount() - curtick) >(KEEPLIVE_TIME/2*1000))
       {

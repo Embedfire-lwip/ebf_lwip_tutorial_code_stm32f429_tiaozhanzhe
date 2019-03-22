@@ -257,7 +257,7 @@ int32_t MQTTMsgPublish(int32_t sock, char *topic, int8_t qos, uint8_t* msg)
 			  packid = 0;
 		}
      
-    msg_len = strlen((char *)msg_len);
+    msg_len = strlen((char *)msg);
     
 		//推送消息
 		len = MQTTSerialize_publish(buf, buflen, 0, qos, retained, packid, topicString, (unsigned char*)msg, msg_len);
@@ -544,7 +544,7 @@ MQTT_START:
 
 
 /************************************************************************
-** 函数名称: mqtt_thread								
+** 函数名称: mqtt_recv_thread								
 ** 函数功能: MQTT任务
 ** 入口参数: void *pvParameters：任务参数
 ** 出口参数: 无
@@ -554,7 +554,7 @@ MQTT_START:
 **           3.订阅指定主题
 **           4.等待接收主题的数据与上报主题数据
 ************************************************************************/
-void mqtt_thread(void *pvParameters)
+void mqtt_recv_thread(void *pvParameters)
 {
 	  uint32_t curtick;
 		uint8_t no_mqtt_msg_exchange = 1;
@@ -577,7 +577,6 @@ MQTT_START:
 				//表明无数据交换
 				no_mqtt_msg_exchange = 1;
 			
-				//推送消息
 				FD_ZERO(&readfd);
 				FD_SET(MQTT_Socket,&readfd);						  
 
@@ -588,7 +587,7 @@ MQTT_START:
 				if(FD_ISSET(MQTT_Socket,&readfd) != 0)
 				{
 						//读取数据包--注意这里参数为0，不阻塞
-						type = ReadPacketTimeout(MQTT_Socket,buf,buflen,50);
+						type = ReadPacketTimeout(MQTT_Socket,buf,buflen,0);
 						if(type != -1)
 						{
 								mqtt_pktype_ctl(type,buf,buflen);
@@ -631,7 +630,7 @@ CLOSE:
 	 goto MQTT_START;	
 }
 
-void mqtt_send(void *pvParameters)
+void mqtt_send_thread(void *pvParameters)
 {
     int32_t ret;
     uint8_t no_mqtt_msg_exchange = 1;
@@ -717,7 +716,7 @@ MQTT_SEND_CLOSE:
 void
 mqtt_thread_init(void)
 {
-  sys_thread_new("iperf_client", mqtt_thread, NULL, 2048, 6);
-  sys_thread_new("iperf_client", mqtt_send, NULL, 2048, 7);
+  sys_thread_new("mqtt_recv_thread", mqtt_recv_thread, NULL, 2048, 6);
+  sys_thread_new("mqtt_send_thread", mqtt_send_thread, NULL, 2048, 7);
 }
 

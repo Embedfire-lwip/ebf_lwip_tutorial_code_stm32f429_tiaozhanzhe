@@ -10,7 +10,7 @@
 #define   MQTT_VERSION    4
 
 #if    LWIP_DNS
-#define   HOST_NAME       "a1MZHjK2SCF.iot-as-mqtt.cn-shanghai.aliyuncs.com"     //服务器域名
+#define   HOST_NAME       "mqtt.heclouds.com"     //服务器域名
 #else
 #define   HOST_NAME       "183.230.40.39"     //服务器IP地址
 #endif
@@ -22,7 +22,7 @@
 #define   USER_NAME     "217537"     //用户名
 #define   PASSWORD      "12345"  //秘钥
 
-#define   TOPIC         "temp"      //订阅的主题
+#define   TOPIC         "temp_hum"      //订阅的主题
 #define   TEST_MESSAGE  "test_message"  //发送测试消息
 
 enum TopicType 

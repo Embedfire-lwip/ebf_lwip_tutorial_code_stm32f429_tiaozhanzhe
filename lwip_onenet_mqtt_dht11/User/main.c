@@ -184,16 +184,16 @@ static void Test1_Task(void* parameter)
     send_data = &DHT11_Data;
     if(SUCCESS == res)
     {
-      PRINT_DEBUG("humidity = %f , temperature = %f\n",
-             DHT11_Data.humidity,DHT11_Data.temperature);
+//      PRINT_DEBUG("humidity = %f , temperature = %f\n",
+//             DHT11_Data.humidity,DHT11_Data.temperature);
 //      PRINT_DEBUG("发送消息send_data1！\n");
       xReturn = xQueueSend( MQTT_Data_Queue, /* 消息队列的句柄 */
                             &send_data,/* 发送的消息内容 */
                             0 );        /* 等待时间 0 */
-      if(xReturn == pdTRUE)
-        PRINT_DEBUG("发送消息数据成功\n");
+//      if(xReturn == pdTRUE)
+//        PRINT_DEBUG("发送消息数据成功\n");
     }
-    PRINT_INFO("1:%s,%d\r\n",__FILE__,__LINE__);
+
     LED1_TOGGLE;
 //    PRINT_DEBUG("LED1_TOGGLE\n");
     vTaskDelay(1000);/* 延时1000个tick */
@@ -212,7 +212,7 @@ static void Test2_Task(void* parameter)
   {
     LED2_TOGGLE;
 //    PRINT_DEBUG("LED2_TOGGLE\n");
-    PRINT_INFO("1:%s,%d\r\n",__FILE__,__LINE__);
+
     vTaskDelay(2000);/* 延时2000个tick */
   }
 }
