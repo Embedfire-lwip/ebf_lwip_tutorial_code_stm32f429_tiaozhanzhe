@@ -9,7 +9,7 @@
 #include <stdio.h>	
 
 
-static void udp_demo_callback1(void *arg, struct udp_pcb *upcb, struct pbuf *p, const ip_addr_t *addr, u16_t port)
+static void udp_demo_callback(void *arg, struct udp_pcb *upcb, struct pbuf *p, const ip_addr_t *addr, u16_t port)
 {
    struct pbuf *q = NULL;
    const char* reply = "This is reply!\n";
@@ -45,7 +45,7 @@ void UDP_Echo_Init(void)
     udp_bind(udpecho_pcb, IP_ADDR_ANY, UDP_ECHO_PORT);
     
     /* 注册接收数据回调函数 */
-    udp_recv(udpecho_pcb, udp_demo_callback1, (void *)st_buffer);
+    udp_recv(udpecho_pcb, udp_demo_callback, (void *)st_buffer);
 }
 
 

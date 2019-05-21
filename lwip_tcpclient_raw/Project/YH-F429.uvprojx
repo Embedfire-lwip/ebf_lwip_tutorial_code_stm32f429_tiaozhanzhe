@@ -553,9 +553,9 @@
               <FilePath>..\User\eth\bsp_eth.c</FilePath>
             </File>
             <File>
-              <FileName>tcpecho.c</FileName>
+              <FileName>tcpclient.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\User\tcpecho.c</FilePath>
+              <FilePath>..\User\tcpclient.c</FilePath>
             </File>
           </Files>
         </Group>

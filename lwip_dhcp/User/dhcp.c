@@ -38,7 +38,7 @@ static void dhcp_thread(void *arg)
 
     printf("create conn success...\n");
     
-    IP4_ADDR(&ipaddr,192,168,1,112); 			//构造服务器IP地址
+    IP4_ADDR(&ipaddr,192,168,0,181); 			//构造服务器IP地址
     
     ret = netconn_connect(conn,&ipaddr,5001);	//连接服务器，端口号5001
     

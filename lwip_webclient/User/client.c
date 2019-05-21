@@ -52,7 +52,7 @@
 uint32_t *pSDRAM= (uint32_t*)SDRAM_BANK_ADDR;
 
 uint8_t get_buf[]= "GET /forum.php HTTP/1.1\r\nHost: www.firebbs.cn \r\n\r\n\r\n\r\n";
-//uint8_t get_buf[]="GET / HTTP/1.1\r\nHost: www.lighttpd.net\r\n\r\n\r\n\r\n\r\n";
+
 
 
 uint8_t post_buf[]= 

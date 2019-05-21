@@ -14,7 +14,7 @@ static err_t tcpecho_recv(void *arg, struct tcp_pcb *tpcb, struct pbuf *p, err_t
 {
   if (p != NULL) 
   {        
-	/* 接收数据*/
+	/* 更新窗口*/
 	tcp_recved(tpcb, p->tot_len);
     
     /* 返回接收到的数据*/  

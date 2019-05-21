@@ -36,7 +36,7 @@
 #include "lwip/snmp.h"
 #include "lwip/timeouts.h"
 
-#include "tcpecho.h"
+#include "tcpclient.h"
 
 struct netif gnetif;
 ip4_addr_t ipaddr;
