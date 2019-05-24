@@ -47,15 +47,15 @@ CH340的收发引脚与STM32的发收引脚相连。
 	RX<--->PA9
 	TX<--->PA10
 以太网：
-	ETH_MDIO -------------------------> PA2
-	ETH_MDC --------------------------> PC1
-	ETH_MII_RX_CLK/ETH_RMII_REF_CLK---> PA1
-	ETH_MII_RX_DV/ETH_RMII_CRS_DV ----> PA7
-	ETH_MII_RXD0/ETH_RMII_RXD0 -------> PC4
-	ETH_MII_RXD1/ETH_RMII_RXD1 -------> PC5
-	ETH_MII_TX_EN/ETH_RMII_TX_EN -----> PB11
-	ETH_MII_TXD0/ETH_RMII_TXD0 -------> PG13
-	ETH_MII_TXD1/ETH_RMII_TXD1 -------> PG14
+	PC1     ------> ETH_MDC
+	PA1     ------> ETH_REF_CLK
+	PA2     ------> ETH_MDIO
+	PA7     ------> ETH_CRS_DV
+	PC4     ------> ETH_RXD0
+	PC5     ------> ETH_RXD1
+	PB11     ------> ETH_TX_EN
+	PG13     ------> ETH_TXD0
+	PG14     ------> ETH_TXD1 
 /*********************************************************************************************/
 
 【*】 时钟
@@ -65,12 +65,11 @@ A.晶振：
 -RTC晶振：32.768KHz
 
 B.各总线运行时钟：
--系统时钟 = SYCCLK = 400MHz
--AHB4 = 200MHz
--AXI  = 200MHz
--APB1 = 100MHz 
--APB2 = 100MHz 
--APB3 = 100MHz
+-系统时钟 = SYCCLK = 180Mhz
+-HCLK = 180Mhz
+-PLLCLK = 180Mhz
+-PCLK2 = 90MHz
+-PCLK1 = 45MHz
  
 C.浮点运算单元：
   使能
