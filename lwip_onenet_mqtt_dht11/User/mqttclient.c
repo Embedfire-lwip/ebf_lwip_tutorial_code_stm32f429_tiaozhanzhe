@@ -571,7 +571,7 @@ int32_t MQTTMsgPublish2dp(int32_t sock, int8_t qos, int8_t type,uint8_t* msg)
         default:
           goto publish2dpfail;
       }
-      // *(uint8_t*)&q[0] = 0x03;
+//      *(uint8_t*)&q[0] = 0x03;
       *(uint8_t*)&q[1] = ((msg_len)&0xff00)>>8;
       *(uint8_t*)&q[2] = (msg_len)&0xff;
       memcpy((uint8_t*)(&q[3]),(uint8_t*)msg,msg_len);
@@ -640,8 +640,7 @@ MQTT_START:
 								curtick = xTaskGetTickCount();
 						}
 				}
-//        vTaskDelay(1000);
-//        PRINT_INFO("1:%s,%d\r\n",__FILE__,__LINE__);
+
         //这里主要目的是定时向服务器发送PING保活命令
         if((xTaskGetTickCount() - curtick) >(KEEPLIVE_TIME/2*1000))
         {
@@ -704,9 +703,7 @@ MQTT_SEND_START:
       {
         a = recv_data->temperature;
         b = recv_data->humidity;
-//        a = 22;
-//        b = 70;
-//        PRINT_DEBUG("a = %f,b = %f\n",a,b);
+        PRINT_DEBUG("temperature = %f,humidity = %f\n",a,b);
         //更新数据      
         res = cJSON_Update(cJSON_Data,TEMP_NUM,&a);
         res = cJSON_Update(cJSON_Data,HUM_NUM,&b);
@@ -716,32 +713,20 @@ MQTT_SEND_START:
             //更新数据成功，
             char* p = cJSON_Print(cJSON_Data);
             //发布消息到'$dp'系统主题
-           ret = MQTTMsgPublish2dp(MQTT_Socket,QOS0,1,(uint8_t*)p);
+           ret = MQTTMsgPublish2dp(MQTT_Socket,QOS0,TopicType3,(uint8_t*)p);
            if(ret >= 0)
            {
-//               printf("表明有数据交换\n");
                //表明有数据交换
                no_mqtt_msg_exchange = 0;
                //获取当前滴答，作为心跳包起始时间
                curtick = xTaskGetTickCount();				
            }
-           uint16_t data_len = strlen((char *)p);
-            ret = MQTTMsgPublish(MQTT_Socket,(char*)TOPIC,QOS0,(uint8_t*)p,data_len);
-            if(ret >= 0)
-            {
-//              printf("表明有数据交换\n");
-                //表明有数据交换
-                no_mqtt_msg_exchange = 0;
-                //获取当前滴答，作为心跳包起始时间
-                curtick = xTaskGetTickCount();				
-            }
             vPortFree(p);
             p = NULL;
         }
         else
           PRINT_DEBUG("update fail\n");
       }
-//      PRINT_INFO("1:%s,%d\r\n",__FILE__,__LINE__);
       //这里主要目的是定时向服务器发送PING保活命令
       if((xTaskGetTickCount() - curtick) >(KEEPLIVE_TIME/2*1000))
       {
@@ -777,7 +762,7 @@ MQTT_SEND_CLOSE:
 void
 mqtt_thread_init(void)
 {
-  sys_thread_new("iperf_client", mqtt_thread, NULL, 2048, 6);
-  sys_thread_new("iperf_client", mqtt_send, NULL, 2048, 7);
+  sys_thread_new("mqtt_thread", mqtt_thread, NULL, 512, 6);
+  sys_thread_new("mqtt_send", mqtt_send, NULL, 512, 7);
 }
 
