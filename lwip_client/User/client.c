@@ -57,24 +57,24 @@ static void client(void *thread_param)
     conn = netconn_new(NETCONN_TCP);
     if (conn == NULL)
     {
-      printf("create conn failed!\n");
+      PRINT_DEBUG("create conn failed!\n");
       vTaskDelay(10);
       continue;
     }
     
-    IP4_ADDR(&ipaddr,192,168,0,181);
-    
-    ret = netconn_connect(conn,&ipaddr,5001);
+    IP4_ADDR(&ipaddr,DEST_IP_ADDR0,DEST_IP_ADDR1,DEST_IP_ADDR2,DEST_IP_ADDR3);
+
+    ret = netconn_connect(conn,&ipaddr,DEST_PORT);
     if (ret == -1)
     {
-        printf("Connect failed!\n");
+        PRINT_DEBUG("Connect failed!\n");
         netconn_close(conn);
         vTaskDelay(10);
         continue;
     }
-    
-    printf("Connect to iperf server successful!\n");
-    
+
+    PRINT_DEBUG("Connect to server successful!\n");
+     
     while (1)
     {
       ret = netconn_write(conn,send_buf,sizeof(send_buf),0);
