@@ -97,7 +97,7 @@ int main(void)
   
   printf("本例程的IP地址均在User/arch/sys_arch.h文件中修改\n\n");
     
-  printf("本例程参考<<LwIP应用实战开发指南>> 使用 NETCONN 接口编程\n\n");
+  printf("本例程参考<<LwIP应用实战开发指南>> 使用  RAW API 接口编程\n\n");
   
   printf("请将电脑上位机设置为TCP Client.输入开发板的IP地址(如192.168.0.122)\n\n");  
   
