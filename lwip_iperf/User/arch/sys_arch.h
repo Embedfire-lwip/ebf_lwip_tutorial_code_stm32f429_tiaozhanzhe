@@ -40,6 +40,37 @@
 #include "queue.h"
 #include "semphr.h"
 
+/* USER CODE BEGIN 0 */
+#define DEST_IP_ADDR0               192
+#define DEST_IP_ADDR1               168
+#define DEST_IP_ADDR2                 0
+#define DEST_IP_ADDR3               181
+
+#define DEST_PORT                  5001
+
+#define UDP_SERVER_PORT            5002   /* define the UDP local connection port */
+#define UDP_CLIENT_PORT            5002   /* define the UDP remote connection port */
+
+#define LOCAL_PORT                 5001
+
+/*Static IP ADDRESS: IP_ADDR0.IP_ADDR1.IP_ADDR2.IP_ADDR3 */
+#define IP_ADDR0                    192
+#define IP_ADDR1                    168
+#define IP_ADDR2                      0
+#define IP_ADDR3                    122
+
+/*NETMASK*/
+#define NETMASK_ADDR0               255
+#define NETMASK_ADDR1               255
+#define NETMASK_ADDR2               255
+#define NETMASK_ADDR3                 0
+
+/*Gateway Address*/
+#define GW_ADDR0                    192
+#define GW_ADDR1                    168
+#define GW_ADDR2                      0
+#define GW_ADDR3                      1
+/* USER CODE END 0 */
 
 #define SYS_MBOX_NULL  (QueueHandle_t)0
 #define SYS_SEM_NULL   (SemaphoreHandle_t)0
@@ -53,34 +84,7 @@ typedef TaskHandle_t sys_thread_t;
 
 typedef int sys_prot_t;
 
-//typedef struct _sys_arch_state_t
-//{
-//	// Task creation data.
-//	char cTaskName[configMAX_TASK_NAME_LEN];
-//	unsigned short nStackDepth;
-//	unsigned short nTaskCount;
-//} sys_arch_state_t;
 
-//#define sys_mbox_valid(mbox) ((mbox != NULL) && ((mbox)->sem != NULL)  && ((mbox)->sem != (void*)-1))
-//#define sys_mbox_valid_val(mbox) (((mbox).sem != NULL)  && ((mbox).sem != (void*)-1))
-
-/* DWORD (thread id) is used for sys_thread_t but we won't include windows.h */
-
-
-//#define SYS_ARCH_DECL_PROTECT(lev)  
-//#define SYS_ARCH_PROTECT(lev) 
-//#define SYS_ARCH_UNPROTECT(lev) 
-
-/* to implement doing something while blocking on an mbox or semaphore:
- * pass a function to test_sys_arch_wait_callback() that returns
- * '0' if waiting again and
- * '1' if now there should be something to do (used for asserting)
- */
-//typedef int (*test_sys_arch_waiting_fn)(sys_sem_t* wait_sem, sys_mbox_t* wait_mbox);
-//void test_sys_arch_wait_callback(test_sys_arch_waiting_fn waiting_fn);
-
-///* current time */
-//extern u32_t lwip_sys_now;
 
 void TCPIP_Init(void);
 

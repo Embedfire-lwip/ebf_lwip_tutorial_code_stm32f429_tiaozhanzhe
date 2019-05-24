@@ -132,6 +132,32 @@ static void AppTaskCreate(void)
   
   mqtt_thread_init();
 
+  printf("本例程使用开发板接入百度云，并且上报温湿度数据\n\n");
+  
+  printf("网络连接模型如下：\n\t 电脑<--网线-->路由<--网线-->开发板\n\n 路由器必须能连接到外网(能上网)\n\n");
+  
+  printf("实验中使用MQTT协议传输数据(依赖TCP协议) ，开发板作为MQTT Client\n\n");
+  
+  printf("本例程的IP地址均在User/arch/sys_arch.h文件中修改\n\n");
+    
+  printf("本例程参考<<LwIP应用实战开发指南>>第22章 连接到百度天工物接入\n\n");
+   
+  printf("在开发板的dht11接口接上DHT11温湿度传感器\n\n");  
+  
+  printf("基本信息(根据在百度云创建的设备进行修改，具体参考书籍第22章 连接到百度天工物接入)\n\n");
+  
+  printf("百度云域名/IP地址 : %s \t 端口号 : %d \n\n",HOST_NAME,HOST_PORT);  
+  
+  printf("百度云CLIENT_ID : %s\n\n",CLIENT_ID); 
+  
+  printf("百度云USER_NAME : %s\n\n",USER_NAME); 
+  
+  printf("百度云PASSWORD : %s\n\n",PASSWORD);  
+  
+  printf("百度云TOPIC : %s\n\n",TOPIC);  
+  
+  printf("百度云TEST_MESSAGE : %s\n\n",TEST_MESSAGE);    
+  
   taskENTER_CRITICAL();           //进入临界区
  
   /* 创建Test1_Task任务 */

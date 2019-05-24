@@ -82,3 +82,10 @@ settings
 *.ld
 
 /lwip_rx_iperf_thread
+lwip_mqtt_baidu_dht11_drive
+lwip_mqtt_baidu
+lwip_mqtt_baidu_json
+lwip_mqtt_onenet_dht11
+lwip_send_thread
+/lwip_webclient_socket
+lwip_webclient_socket
