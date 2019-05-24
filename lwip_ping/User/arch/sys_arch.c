@@ -46,7 +46,7 @@
 #include <lwip/stats.h>
 #include <lwip/debug.h>
 #include <lwip/sys.h>
-
+#include "lwip/dhcp.h"
 #include <string.h>
 
 int errno;
@@ -118,17 +118,25 @@ struct sys_timeouts *sys_arch_timeouts(void)
 
 sys_prot_t sys_arch_protect(void)
 {
-	vPortEnterCritical();         //进入临界段
+	vPortEnterCritical();
 	return 1;
 }
 
 void sys_arch_unprotect(sys_prot_t pval)
 {
 	( void ) pval;
-	vPortExitCritical();      //退出临界段
+	vPortExitCritical();
 }
 
 #if !NO_SYS
+
+//test_sys_arch_waiting_fn the_waiting_fn;
+
+//void
+//test_sys_arch_wait_callback(test_sys_arch_waiting_fn waiting_fn)
+//{
+//  the_waiting_fn = waiting_fn;
+//}
 
 err_t
 sys_sem_new(sys_sem_t *sem, u8_t count)
@@ -136,14 +144,14 @@ sys_sem_new(sys_sem_t *sem, u8_t count)
   /* 创建 sem */
   if(count <= 1)
   {    
-    *sem = xSemaphoreCreateBinary();      //创建二值信号量
+    *sem = xSemaphoreCreateBinary();
     if(count == 1)
     {
-      sys_sem_signal(*sem);       //新创建的信号量是无效的，需要释放一个信号量
+      sys_sem_signal(*sem);
     }
   }
   else
-    *sem = xSemaphoreCreateCounting(count,count); //创建计数信号量
+    *sem = xSemaphoreCreateCounting(count,count);
   
 #if SYS_STATS
 	++lwip_stats.sys.sem.used;
@@ -153,7 +161,7 @@ sys_sem_new(sys_sem_t *sem, u8_t count)
 #endif /* SYS_STATS */
   
   if(*sem != SYS_SEM_NULL)
-    return ERR_OK;          //创建成功返回ERR_OK
+    return ERR_OK;
   else
   {
 #if SYS_STATS
@@ -171,21 +179,21 @@ sys_sem_free(sys_sem_t *sem)
    --lwip_stats.sys.sem.used;
 #endif /* SYS_STATS */
   /* 删除 sem */
-  vSemaphoreDelete(*sem);   //删除一个信号量
-  *sem = SYS_SEM_NULL;  //删除之后置空
+  vSemaphoreDelete(*sem);
+  *sem = SYS_SEM_NULL;
 }
 
 
 int sys_sem_valid(sys_sem_t *sem)                                               
 {
-  return (*sem != SYS_SEM_NULL);   //返回信号量是否有效                             
+  return (*sem != SYS_SEM_NULL);                                    
 }
 
 
 void
 sys_sem_set_invalid(sys_sem_t *sem)
 {
-  *sem = SYS_SEM_NULL;    //信号量设置为无效    
+  *sem = SYS_SEM_NULL;
 }
 
 /* 
@@ -228,7 +236,7 @@ sys_arch_sem_wait(sys_sem_t *sem, u32_t timeout)
 void
 sys_sem_signal(sys_sem_t *sem)
 {
-  if(xSemaphoreGive( *sem ) != pdTRUE)    //释放信号量
+  if(xSemaphoreGive( *sem ) != pdTRUE)
     printf("[sys_arch]:sem signal fail!\n");
 }
 
@@ -236,9 +244,9 @@ err_t
 sys_mutex_new(sys_mutex_t *mutex)
 {
   /* 创建 sem */   
-  *mutex = xSemaphoreCreateMutex(); //创建互斥量
+  *mutex = xSemaphoreCreateMutex();
   if(*mutex != SYS_MRTEX_NULL)
-    return ERR_OK;      //创建成功返回ERR_OK
+    return ERR_OK;
   else
   {
     printf("[sys_arch]:new mutex fail!\n");
@@ -249,13 +257,13 @@ sys_mutex_new(sys_mutex_t *mutex)
 void
 sys_mutex_free(sys_mutex_t *mutex)
 {
-  vSemaphoreDelete(*mutex);   //删除互斥量
+  vSemaphoreDelete(*mutex);
 }
 
 void
 sys_mutex_set_invalid(sys_mutex_t *mutex)
 {
-  *mutex = SYS_MRTEX_NULL;    //设置互斥量为无效
+  *mutex = SYS_MRTEX_NULL;
 }
 
 void
@@ -277,13 +285,13 @@ sys_thread_new(const char *name, lwip_thread_fn function, void *arg, int stacksi
 {
   sys_thread_t handle = NULL;
   BaseType_t xReturn = pdPASS;
-  /* 创建一个线程 */
-  xReturn = xTaskCreate((TaskFunction_t )function,  /* 线程入口函数 */
-                        (const char*    )name,/* 线程名字 */
-                        (uint16_t       )stacksize,  /* 线程栈大小 */
-                        (void*          )arg,/* 线程入口函数参数 */
-                        (UBaseType_t    )prio, /* 线程的优先级 */
-                        (TaskHandle_t*  )&handle);/* 线程控制块指针 */ 
+  /* 创建MidPriority_Task任务 */
+  xReturn = xTaskCreate((TaskFunction_t )function,  /* 任务入口函数 */
+                        (const char*    )name,/* 任务名字 */
+                        (uint16_t       )stacksize,  /* 任务栈大小 */
+                        (void*          )arg,/* 任务入口函数参数 */
+                        (UBaseType_t    )prio, /* 任务的优先级 */
+                        (TaskHandle_t*  )&handle);/* 任务控制块指针 */ 
   if(xReturn != pdPASS)
   {
     printf("[sys_arch]:create task fail!err:%#lx\n",xReturn);
@@ -295,8 +303,8 @@ sys_thread_new(const char *name, lwip_thread_fn function, void *arg, int stacksi
 err_t
 sys_mbox_new(sys_mbox_t *mbox, int size)
 {
-  /* 创建一个邮箱 */
-  *mbox = xQueueCreate((UBaseType_t ) size,/* 邮箱的长度 */
+    /* 创建Test_Queue */
+  *mbox = xQueueCreate((UBaseType_t ) size,/* 消息队列的长度 */
                        (UBaseType_t ) sizeof(void *));/* 消息的大小 */
 #if SYS_STATS
       ++lwip_stats.sys.mbox.used;
@@ -305,7 +313,7 @@ sys_mbox_new(sys_mbox_t *mbox, int size)
 	  }
 #endif /* SYS_STATS */
 	if(NULL == *mbox)
-    return ERR_MEM;   // 创建成功返回ERR_OK
+    return ERR_MEM;
   
   return ERR_OK;
 }
@@ -320,9 +328,11 @@ sys_mbox_free(sys_mbox_t *mbox)
 #if SYS_STATS
 	    lwip_stats.sys.mbox.err++;
 #endif /* SYS_STATS */
+
+		// TODO notify the user of failure.
 	}
   
-  vQueueDelete(*mbox);    //删除一个邮箱
+  vQueueDelete(*mbox);
   
 #if SYS_STATS
      --lwip_stats.sys.mbox.used;
@@ -331,7 +341,7 @@ sys_mbox_free(sys_mbox_t *mbox)
 
 int sys_mbox_valid(sys_mbox_t *mbox)          
 {      
-  if (*mbox == SYS_MBOX_NULL)     //判断邮箱是否有效
+  if (*mbox == SYS_MBOX_NULL) 
     return 0;
   else
     return 1;
@@ -340,13 +350,13 @@ int sys_mbox_valid(sys_mbox_t *mbox)
 void
 sys_mbox_set_invalid(sys_mbox_t *mbox)
 {
-  *mbox = SYS_MBOX_NULL;  //设置有效为无效状态
+  *mbox = SYS_MBOX_NULL; 
 }
 
 void
 sys_mbox_post(sys_mbox_t *q, void *msg)
 {
-  while(xQueueSend( *q, /* 邮箱的句柄 */
+  while(xQueueSend( *q, /* 消息队列的句柄 */
                     &msg,/* 发送的消息内容 */
                     portMAX_DELAY) != pdTRUE); /* 等待时间 */
 }
@@ -354,33 +364,16 @@ sys_mbox_post(sys_mbox_t *q, void *msg)
 err_t
 sys_mbox_trypost(sys_mbox_t *q, void *msg)
 {
-  if(xQueueSend(*q,&msg,0) == pdPASS)  //尝试发送一个消息，非阻塞发送
+  if(xQueueSend(*q,&msg,0) == pdPASS)  
     return ERR_OK;
   else
     return ERR_MEM;
 }
 
 err_t
-sys_mbox_trypost_fromisr(sys_mbox_t *q, void *msg)  
+sys_mbox_trypost_fromisr(sys_mbox_t *q, void *msg)
 {
-  uint32_t ulReturn;
-  err_t err = ERR_MEM;
-  BaseType_t pxHigherPriorityTaskWoken;
-  
-  /* 进入临界段，临界段可以嵌套 */
-  ulReturn = taskENTER_CRITICAL_FROM_ISR();
-  
-  if(xQueueSendFromISR(*q,&msg,&pxHigherPriorityTaskWoken)==pdPASS)
-  {
-    err = ERR_OK;
-  }
-  //如果需要的话进行一次线程切换
-  portYIELD_FROM_ISR(pxHigherPriorityTaskWoken);
-  
-/* 退出临界段 */
-  taskEXIT_CRITICAL_FROM_ISR( ulReturn );
-  
-  return err;
+  return sys_mbox_trypost(q, msg);
 }
 
 u32_t
@@ -449,12 +442,11 @@ uint8_t GATEWAY_ADDRESS[4];
 
 void TCPIP_Init(void)
 {
-  
   tcpip_init(NULL, NULL);
   
   /* IP addresses initialization */
   /* USER CODE BEGIN 0 */
-#ifdef USE_DHCP
+#if LWIP_DHCP
   ip_addr_set_zero_ip4(&ipaddr);
   ip_addr_set_zero_ip4(&netmask);
   ip_addr_set_zero_ip4(&gw);
@@ -481,10 +473,31 @@ void TCPIP_Init(void)
     /* When the netif link is down this function must be called */
     netif_set_down(&gnetif);
   }
-
-/* USER CODE BEGIN 3 */
-
-/* USER CODE END 3 */
+  
+#if LWIP_DHCP	   			//若使用了DHCP
+  int err;
+  /*  Creates a new DHCP client for this interface on the first call.
+  Note: you must call dhcp_fine_tmr() and dhcp_coarse_tmr() at
+  the predefined regular intervals after starting the client.
+  You can peek in the netif->dhcp struct for the actual DHCP status.*/
+  
+  printf("本例程将使用DHCP动态分配IP地址,如果不需要则在lwipopts.h中将LWIP_DHCP定义为0\n\n");
+  
+  err = dhcp_start(&gnetif);      //开启dhcp
+  if(err == ERR_OK)
+    printf("lwip dhcp init success...\n\n");
+  else
+    printf("lwip dhcp init fail...\n\n");
+  while(ip_addr_cmp(&(gnetif.ip_addr),&ipaddr))   //等待dhcp分配的ip有效
+  {
+    vTaskDelay(1);
+  } 
+#endif
+  printf("本地IP地址是:%d.%d.%d.%d\n\n",  \
+        ((gnetif.ip_addr.addr)&0x000000ff),       \
+        (((gnetif.ip_addr.addr)&0x0000ff00)>>8),  \
+        (((gnetif.ip_addr.addr)&0x00ff0000)>>16), \
+        ((gnetif.ip_addr.addr)&0xff000000)>>24);
 }
 
 

@@ -46,10 +46,10 @@
 #define DEST_IP_ADDR2                 0
 #define DEST_IP_ADDR3               181
 
-#define DEST_PORT                  6000
+#define DEST_PORT                  5001
 
-#define UDP_SERVER_PORT            5001   /* define the UDP local connection port */
-#define UDP_CLIENT_PORT            5001   /* define the UDP remote connection port */
+#define UDP_SERVER_PORT            5002   /* define the UDP local connection port */
+#define UDP_CLIENT_PORT            5002   /* define the UDP remote connection port */
 
 #define LOCAL_PORT                 5001
 

@@ -72,10 +72,10 @@
 /* USER CODE BEGIN 0 */
 #define DEST_IP_ADDR0               192
 #define DEST_IP_ADDR1               168
-#define DEST_IP_ADDR2                 1
-#define DEST_IP_ADDR3               102
+#define DEST_IP_ADDR2                 0
+#define DEST_IP_ADDR3               181
 
-#define DEST_PORT                  6000
+#define DEST_PORT                  5001
 
 #define UDP_SERVER_PORT            5002   /* define the UDP local connection port */
 #define UDP_CLIENT_PORT            5002   /* define the UDP remote connection port */
@@ -101,10 +101,20 @@
 #define GW_ADDR3                      1
 /* USER CODE END 0 */
 
-/* Global Variables ----------------------------------------------------------*/
-//extern ETH_HandleTypeDef heth;
+#define SYS_MBOX_NULL  (QueueHandle_t)0
+#define SYS_SEM_NULL   (SemaphoreHandle_t)0
+#define SYS_MRTEX_NULL SYS_SEM_NULL
+#define SYS_DEFAULT_THREAD_STACK_DEPTH	configMINIMAL_STACK_SIZE
 
-/* LWIP init function */	
+typedef SemaphoreHandle_t sys_sem_t;
+typedef SemaphoreHandle_t sys_mutex_t;
+typedef QueueHandle_t sys_mbox_t;
+typedef TaskHandle_t sys_thread_t;
+
+typedef int sys_prot_t;
+
+
+
 void TCPIP_Init(void);
 
 #if !WITH_RTOS
