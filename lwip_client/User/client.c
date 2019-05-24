@@ -45,6 +45,13 @@ static void client(void *thread_param)
   
   uint8_t send_buf[]= "This is a TCP Client test...\n";
   
+  printf("目地IP地址:%d.%d.%d.%d \t 端口号:%d\n\n",      \
+          DEST_IP_ADDR0,DEST_IP_ADDR1,DEST_IP_ADDR2,DEST_IP_ADDR3,DEST_PORT);
+  
+  printf("请将电脑上位机设置为TCP Server.在User/arch/sys_arch.h文件中将目标IP地址修改为您电脑上的IP地址\n\n");
+  
+  printf("修改对应的宏定义:DEST_IP_ADDR0,DEST_IP_ADDR1,DEST_IP_ADDR2,DEST_IP_ADDR3,DEST_PORT\n\n");
+  
   while(1)
   {
     conn = netconn_new(NETCONN_TCP);
