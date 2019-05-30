@@ -179,7 +179,7 @@ HAL_StatusTypeDef Bsp_Eth_Init(void)
   heth.Init.PhyAddress = LAN8720_PHY_ADDRESS;
   heth.Init.MACAddr = &MACAddr[0];
   heth.Init.RxMode = ETH_RXINTERRUPT_MODE;  // rx mode   
-  heth.Init.ChecksumMode = ETH_CHECKSUM_BY_HARDWARE;
+  heth.Init.ChecksumMode = ETH_CHECKSUM_BY_SOFTWARE;
   heth.Init.MediaInterface = ETH_MEDIA_INTERFACE_RMII;
   heth.Init.Speed = ETH_SPEED_100M;       //speed
   heth.Init.DuplexMode = ETH_MODE_FULLDUPLEX;
