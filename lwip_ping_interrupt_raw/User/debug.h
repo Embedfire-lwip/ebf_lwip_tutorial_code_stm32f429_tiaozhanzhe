@@ -20,7 +20,7 @@
 #endif
 
 #ifndef PRINT_INFO_ENABLE
-#define PRINT_INFO_ENABLE			1		/* 打印个人信息 */
+#define PRINT_INFO_ENABLE			0		/* 打印个人信息 */
 #endif
 
 #if PRINT_DEBUG_ENABLE
