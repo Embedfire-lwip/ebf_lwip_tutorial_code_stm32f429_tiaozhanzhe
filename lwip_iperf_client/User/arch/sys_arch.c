@@ -167,7 +167,7 @@ sys_sem_new(sys_sem_t *sem, u8_t count)
 #if SYS_STATS
     ++lwip_stats.sys.sem.err;
 #endif /* SYS_STATS */
-    printf("[sys_arch]:new sem fail!\n");
+    PRINT_DEBUG("[sys_arch]:new sem fail!\n");
     return ERR_MEM;
   }
 }
@@ -237,7 +237,7 @@ void
 sys_sem_signal(sys_sem_t *sem)
 {
   if(xSemaphoreGive( *sem ) != pdTRUE)
-    printf("[sys_arch]:sem signal fail!\n");
+    PRINT_DEBUG("[sys_arch]:sem signal fail!\n");
 }
 
 err_t
@@ -249,7 +249,7 @@ sys_mutex_new(sys_mutex_t *mutex)
     return ERR_OK;
   else
   {
-    printf("[sys_arch]:new mutex fail!\n");
+    PRINT_DEBUG("[sys_arch]:new mutex fail!\n");
     return ERR_MEM;
   }
 }
@@ -294,7 +294,7 @@ sys_thread_new(const char *name, lwip_thread_fn function, void *arg, int stacksi
                         (TaskHandle_t*  )&handle);/* 任务控制块指针 */ 
   if(xReturn != pdPASS)
   {
-    printf("[sys_arch]:create task fail!err:%#lx\n",xReturn);
+    PRINT_DEBUG("[sys_arch]:create task fail!err:%#lx\n",xReturn);
     return NULL;
   }
   return handle;

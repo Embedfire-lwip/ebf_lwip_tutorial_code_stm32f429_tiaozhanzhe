@@ -133,7 +133,7 @@ a lot of data that needs to be copied, this should be set high. */
 
 /** DNS server IP address */
 #ifndef DNS_SERVER_ADDRESS
-#define DNS_SERVER_ADDRESS(ipaddr)        (ip4_addr_set_u32(ipaddr, ipaddr_addr("208.67.222.222"))) /* resolver1.opendns.com */
+#define DNS_SERVER_ADDRESS(ipaddr)        (ip4_addr_set_u32(ipaddr, ipaddr_addr("223.5.5.5"))) /* resolver1.opendns.com */
 #endif
 
 #ifdef LWIP_IGMP

@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "memp_std.h": "c",
+        "sockets_priv.h": "c"
+    }
+}

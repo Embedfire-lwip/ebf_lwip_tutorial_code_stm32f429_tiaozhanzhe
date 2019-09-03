@@ -1,0 +1,14 @@
+{
+    "files.associations": {
+        "igmp.h": "c",
+        "memp.h": "c",
+        "tcpip_priv.h": "c",
+        "string.h": "c",
+        "ip_addr.h": "c",
+        "api_msg.h": "c",
+        "api.h": "c",
+        "ip.h": "c",
+        "netbuf.h": "c",
+        "raw.h": "c"
+    }
+}

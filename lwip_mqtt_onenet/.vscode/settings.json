@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "mqttclient.h": "c",
+        "cjson_process.h": "c"
+    }
+}

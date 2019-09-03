@@ -6,7 +6,7 @@
 
 #define   MSG_MAX_LEN     500
 #define   MSG_TOPIC_LEN   50
-#define   KEEPLIVE_TIME   50
+#define   KEEPLIVE_TIME   300
 #define   MQTT_VERSION    4
 
 #if    LWIP_DNS

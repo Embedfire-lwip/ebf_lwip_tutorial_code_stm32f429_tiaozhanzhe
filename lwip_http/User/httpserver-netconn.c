@@ -15,7 +15,7 @@ static const char http_html_hdr[] = "HTTP/1.1 200 OK\r\nContent-type: text/html\
 
 static const char http_index_html[] = "<html><head><title>Congrats!</title></head>\
                                        <body><h1 align=\"center\">Hello World!</h1>\
-                                       <h2 align=\"center\">Welcome to Fire lwIP HTTP Server!</h1>\
+                                       <h2 align=\"center\">Welcome to Fire LwIP HTTP Server!</h1>\
                                        <p align=\"center\">This is a small test page, served by httpserver-netconn.</p>\
                                        <p align=\"center\"><a href=\"http://www.firebbs.cn/forum.php/\"> <font size=\"6\"> Ò°»ðµç×ÓÂÛÌ³ </font> </a></p>\
                                        <a href=\"http://www.firebbs.cn/forum.php/\">\

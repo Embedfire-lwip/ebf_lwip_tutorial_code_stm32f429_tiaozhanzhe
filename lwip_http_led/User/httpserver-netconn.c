@@ -36,7 +36,7 @@ const unsigned char Led1On_Data[] ="<HTML> \
                                         </HTML> ";
   
   static const char http_index_html[] = "<html><head><title>Congrats!</title></head>\
-                                         <body><h2 align=\"center\">Welcome to Fire lwIP HTTP Server!</h2>\
+                                         <body><h2 align=\"center\">Welcome to Fire LwIP HTTP Server!</h2>\
                                          <p align=\"center\">This is a small test page : http control led.</p>\
                                          <p align=\"center\"><a href=\"http://www.firebbs.cn/forum.php/\"> <font size=\"6\"> Ò°»ðµç×ÓÂÛÌ³ </font> </a></p>\
                                          <a href=\"http://www.firebbs.cn/forum.php/\">\

@@ -47,7 +47,7 @@ uint8_t MQTT_Connect(void)
     data.clientID.cstring = CLIENT_ID;                   //随机
     data.keepAliveInterval = KEEPLIVE_TIME;         //保持活跃
     data.username.cstring = USER_NAME;              //用户名
-    data.password.cstring = PASSWORD;               //秘钥
+    data.password.cstring = PASSWORD;               //密钥
     data.MQTTVersion = MQTT_VERSION;                //3表示3.1版本，4表示3.11版本
     data.cleansession = 1;
     //组装消息
@@ -66,7 +66,7 @@ uint8_t MQTT_Connect(void)
         }
         else 
         {
-            PRINT_DEBUG("用户名与秘钥验证成功，MQTT连接成功！\n");
+            PRINT_DEBUG("用户名与密钥验证成功，MQTT连接成功！\n");
             return Connect_OK;
         }
     }
@@ -517,12 +517,12 @@ MQTT_START:
 				vTaskDelay(3000);
 		}
     
-    PRINT_DEBUG("2.MQTT用户名与秘钥验证登陆...\n");
-    //MQTT用户名与秘钥验证登陆
+    PRINT_DEBUG("2.MQTT用户名与密钥验证登录...\n");
+    //MQTT用户名与密钥验证登录
     if(MQTT_Connect() != Connect_OK)
     {
          //重连服务器
-         PRINT_DEBUG("MQTT用户名与秘钥验证登陆失败...\n");
+         PRINT_DEBUG("MQTT用户名与密钥验证登录失败...\n");
           //关闭链接
          transport_close();
          goto MQTT_START;	 
@@ -556,7 +556,7 @@ MQTT_START:
 ** 出口参数: 无
 ** 备    注: MQTT连云步骤：
 **           1.连接对应云平台的服务器
-**           2.MQTT用户与秘钥验证登陆
+**           2.MQTT用户与密钥验证登录
 **           3.订阅指定主题
 **           4.等待接收主题的数据与上报主题数据
 ************************************************************************/
