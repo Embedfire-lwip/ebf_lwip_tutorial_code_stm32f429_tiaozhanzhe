@@ -9,7 +9,7 @@
 #define   KEEPLIVE_TIME   50
 #define   MQTT_VERSION    4
 
-#ifdef    LWIP_DNS
+#if    LWIP_DNS
 #define   HOST_NAME       "rvmbdy8.mqtt.iot.gz.baidubce.com"     //服务器域名
 #else
 #define   HOST_NAME       "14.215.190.20"     //服务器IP地址
