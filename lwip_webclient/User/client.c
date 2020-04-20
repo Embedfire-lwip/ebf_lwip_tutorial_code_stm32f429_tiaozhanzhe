@@ -43,7 +43,7 @@
 #define IP_ADDR        "114.215.151.106"
 
 #ifdef    LWIP_DNS
-#define   HOST_NAME       "embedfire.com"     //www.lighttpd.net"
+#define   HOST_NAME       "embedfire.com"     
 #else
 #define   HOST_NAME       "114.215.151.106"     //
 #endif
